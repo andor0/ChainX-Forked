@@ -1,6 +1,6 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
-//! Shareable ChainX types.
+//! Shareable Akro types.
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(not(feature = "std"), feature(alloc))]
 
@@ -105,7 +105,7 @@ pub struct InherentData {
 #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "std", serde(deny_unknown_fields))]
 pub struct CandidateReceipt {
-    /// chainx account id.
+    /// akro account id.
     pub collator: AccountId,
     /// Signature on blake2-256 of the block data by collator.
     pub signature: CandidateSignature,

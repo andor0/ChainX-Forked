@@ -1,7 +1,7 @@
 [package]
-name = "chainx-api"
+name = "akro-api"
 version = "0.3.0"
-authors = ["Chainpool <http://www.chainx.org>"]
+authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
 sr-primitives = { git = "https://github.com/paritytech/substrate" }
@@ -11,8 +11,8 @@ substrate-primitives = { git = "https://github.com/paritytech/substrate" }
 substrate-client-db = { git = "https://github.com/paritytech/substrate" }
 substrate-executor = { git = "https://github.com/paritytech/substrate" }
 substrate-client = { git = "https://github.com/paritytech/substrate" }
-chainx-primitives = { path = "../primitives" }
-chainx-executor = { path = "../executor" }
-chainx-runtime = { path = "../runtime" }
+akro-primitives = { path = "../primitives" }
+akro-executor = { path = "../executor" }
+akro-runtime = { path = "../runtime" }
 parity-codec = { version = "2.0" }
 log = "0.3"

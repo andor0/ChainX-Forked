@@ -1,10 +1,10 @@
-// Copyright 2018 chainpool
+// Copyright 2018 akropolis
 
-use chainx_api::ChainXApi;
-use chainx_api::TClient;
-use chainx_pool::TransactionPool;
-use chainx_primitives;
-use chainx_rpc;
+use akro_api::AkroApi;
+use akro_api::TClient;
+use akro_pool::TransactionPool;
+use akro_primitives;
+use akro_rpc;
 use clap;
 use cli;
 use jsonrpc_http_server::Server as HttpServer;
@@ -24,22 +24,22 @@ pub fn start<A>(
     Result<Option<WsServer>, io::Error>,
 )
 where
-    A: ChainXApi + Send + Sync + 'static,
+    A: AkroApi + Send + Sync + 'static,
 {
     let handler = || {
         let subscriptions = rpc_server::apis::Subscriptions::new(task_executor.clone());
 
         let chain = rpc_server::apis::chain::Chain::new(client.clone(), subscriptions.clone());
-        let chain_ext = chainx_rpc::chainext::ChainExt::new(client.clone(), task_executor.clone());
+        let chain_ext = akro_rpc::chainext::ChainExt::new(client.clone(), task_executor.clone());
         let state = rpc_server::apis::state::State::new(client.clone(), subscriptions.clone());
         let author = rpc_server::apis::author::Author::new(
             client.clone(),
             extrinsic_pool.inner().clone(),
             subscriptions.clone(),
         );
-        chainx_rpc::servers::rpc_handler::<
-            chainx_primitives::Block,
-            chainx_primitives::Hash,
+        akro_rpc::servers::rpc_handler::<
+            akro_primitives::Block,
+            akro_primitives::Hash,
             _,
             _,
             _,
@@ -51,7 +51,7 @@ where
             chain,
             chain_ext,
             author,
-            chainx_rpc::default_rpc_config(),
+            akro_rpc::default_rpc_config(),
         )
     };
     let rpc_interface: &str = if matches.is_present("rpc-external") {
@@ -72,13 +72,13 @@ where
     );
 
     let rpc_http: Result<Option<HttpServer>, io::Error> =
-        chainx_rpc::maybe_start_server(rpc_http_addr, |address| {
-            chainx_rpc::servers::start_http(address, handler())
+        akro_rpc::maybe_start_server(rpc_http_addr, |address| {
+            akro_rpc::servers::start_http(address, handler())
         });
 
     let rpc_ws: Result<Option<WsServer>, io::Error> =
-        chainx_rpc::maybe_start_server(rpc_ws_addr, |address| {
-            chainx_rpc::servers::start_ws(address, handler())
+        akro_rpc::maybe_start_server(rpc_ws_addr, |address| {
+            akro_rpc::servers::start_ws(address, handler())
         });
 
     (rpc_http, rpc_ws)

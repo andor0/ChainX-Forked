@@ -1,9 +1,9 @@
 [package]
-name = "chainx-executor"
+name = "akro-executor"
 version = "0.3.0"
-authors = ["Chainpool <http://www.chainx.org>"]
+authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
 substrate-executor = { git = "https://github.com/paritytech/substrate" }
 substrate-primitives = { git = "https://github.com/paritytech/substrate" }
-chainx-runtime = { path = "../runtime" }
+akro-runtime = { path = "../runtime" }

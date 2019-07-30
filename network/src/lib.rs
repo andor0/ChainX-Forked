@@ -1,6 +1,6 @@
-// Copyright 2018 chainpool.
+// Copyright 2018 Akropolis.
 
-//! chainx-specific network implementation.
+//! akro-specific network implementation.
 //!
 //! This manages gossip of consensus messages for BFT, communication between validators
 //! and more.
@@ -9,9 +9,9 @@ extern crate substrate_bft as bft;
 extern crate substrate_network;
 extern crate substrate_primitives;
 
-extern crate chainx_api;
-extern crate chainx_consensus;
-extern crate chainx_primitives;
+extern crate akro_api;
+extern crate akro_consensus;
+extern crate akro_primitives;
 
 extern crate futures;
 extern crate rhododendron;
@@ -22,7 +22,7 @@ extern crate log;
 
 pub mod consensus;
 
-use chainx_primitives::{Block, Hash, Header};
+use akro_primitives::{Block, Hash, Header};
 use substrate_network::consensus_gossip::ConsensusGossip;
 use substrate_network::specialization::Specialization;
 use substrate_network::StatusMessage as GenericFullStatus;
@@ -31,21 +31,21 @@ use substrate_network::{Context, NodeIndex, Severity};
 
 type FullStatus = GenericFullStatus<Block>;
 
-/// Specialization of the network service for the chainx protocol.
-pub type NetworkService = ::substrate_network::Service<Block, ChainXProtocol, Hash>;
+/// Specialization of the network service for the akro protocol.
+pub type NetworkService = ::substrate_network::Service<Block, AkroProtocol, Hash>;
 
-pub const CHAINX_PROTOCOL_ID: substrate_network::ProtocolId = *b"pcx";
+pub const AKRO_PROTOCOL_ID: substrate_network::ProtocolId = *b"pcx";
 
-/// ChainX protocol attachment for substrate.
-pub struct ChainXProtocol {
+/// Akro protocol attachment for substrate.
+pub struct AkroProtocol {
     consensus_gossip: ConsensusGossip<Block>,
     live_consensus: Option<Hash>,
 }
 
-impl ChainXProtocol {
-    /// Instantiate a chainx protocol handler.
+impl AkroProtocol {
+    /// Instantiate a akro protocol handler.
     pub fn new() -> Self {
-        ChainXProtocol {
+        AkroProtocol {
             consensus_gossip: ConsensusGossip::new(),
             live_consensus: None,
         }
@@ -60,7 +60,7 @@ impl ChainXProtocol {
     }
 }
 
-impl Specialization<Block> for ChainXProtocol {
+impl Specialization<Block> for AkroProtocol {
     fn status(&self) -> Vec<u8> {
         Vec::new()
     }
@@ -81,7 +81,7 @@ impl Specialization<Block> for ChainXProtocol {
     ) {
         match message {
             generic_message::Message::BftMessage(msg) => {
-                trace!(target: "p_net", "ChainX BFT message from {}: {:?}", who, msg);
+                trace!(target: "p_net", "Akro BFT message from {}: {:?}", who, msg);
                 // TODO: check signature here? what if relevant block is unknown?
                 self.consensus_gossip.on_bft_message(ctx, who, msg)
             }

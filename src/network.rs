@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 akropolis
 
 use clap;
 use std::iter;
@@ -10,9 +10,9 @@ use substrate_network::{Params, Roles, TransactionPool};
 use substrate_network_libp2p;
 use substrate_network_libp2p::Protocol;
 
-use chainx_network::{ChainXProtocol, NetworkService, CHAINX_PROTOCOL_ID};
+use akro_network::{AkroProtocol, NetworkService, AKRO_PROTOCOL_ID};
 
-pub type NetworkParam = Params<super::Block, ChainXProtocol, super::Hash>;
+pub type NetworkParam = Params<super::Block, AkroProtocol, super::Hash>;
 
 pub fn build_network(
     port: u16,
@@ -49,7 +49,7 @@ pub fn build_network(
         chain: client,
         on_demand: None,
         transaction_pool: tx_pool,
-        specialization: ChainXProtocol::new(),
+        specialization: AkroProtocol::new(),
     };
-    NetworkService::new(param, CHAINX_PROTOCOL_ID).unwrap()
+    NetworkService::new(param, AKRO_PROTOCOL_ID).unwrap()
 }

@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 Akropolis
 
 use clap::{App, Arg, ArgMatches, SubCommand};
 use std::net::SocketAddr;
@@ -14,7 +14,7 @@ pub enum ChainSpec {
 }
 
 pub fn build_cli() -> App<'static, 'static> {
-    App::new("ChainX")
+    App::new("Akropolis")
         .version("0.3.0")
         .about("    Cross-Chain Asset Manager")
         .arg(
