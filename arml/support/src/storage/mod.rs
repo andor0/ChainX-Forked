@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 pub mod btree_map;
 pub mod double_map;

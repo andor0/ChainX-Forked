@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 //! TokenBalances: Handles token symbol balances.
 
 // Ensure we're `no_std` when compiling for Wasm.
@@ -29,11 +29,11 @@ extern crate srml_support as runtime_support;
 extern crate srml_balances as balances;
 extern crate srml_system as system;
 
-// for chainx runtime module lib
-extern crate cxrml_associations as associations;
-extern crate cxrml_support as cxsupport;
+// for akro runtime module lib
+extern crate arml_associations as associations;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
+extern crate arml_system;
 
 #[cfg(test)]
 mod mock;
@@ -58,9 +58,9 @@ pub type SymbolString = &'static [u8];
 
 pub type DescString = SymbolString;
 
-pub trait Trait: balances::Trait + cxsupport::Trait {
-    const CHAINX_SYMBOL: SymbolString;
-    const CHAINX_TOKEN_DESC: DescString;
+pub trait Trait: balances::Trait + arml_support::Trait {
+    const AKRO_SYMBOL: SymbolString;
+    const AKRO_TOKEN_DESC: DescString;
     /// The token balance.
     type TokenBalance: Parameter
         + Member
@@ -242,11 +242,11 @@ decl_event!(
         UnreverseToken(AccountId, Symbol, TokenBalance),
         /// destroy
         DestroyToken(AccountId, Symbol, TokenBalance),
-        /// Transfer chainx succeeded
-        TransferChainX(AccountId, AccountId, Balance),
+        /// Transfer akro succeeded
+        TransferAkro(AccountId, AccountId, Balance),
         /// Transfer token succeeded (from, to, symbol, value, fees).
         TransferToken(AccountId, AccountId, Symbol, TokenBalance),
-        /// Move Free Token, include chainx (from, to, symbol, value)
+        /// Move Free Token, include akro (from, to, symbol, value)
         MoveFreeToken(AccountId, AccountId, Symbol, TokenBalance),
         /// set transfer token fee
         SetTransferTokenFee(Balance),
@@ -255,8 +255,8 @@ decl_event!(
 
 decl_storage! {
     trait Store for Module<T: Trait> as TokenBalances {
-        /// chainx token precision
-        pub ChainXPrecision get(chainx_precision) config(): Precision;
+        /// akro token precision
+        pub AkroPrecision get(akro_precision) config(): Precision;
 
         /// supported token list
         pub TokenListMap get(token_list_map): map u32 => Symbol;
@@ -276,7 +276,7 @@ decl_storage! {
         pub ReservedToken: map (T::AccountId, Symbol, ReservedType) => T::TokenBalance;
 
         /// token list of a account
-        pub TokenListOf get(token_list_of): map T::AccountId => Vec<Symbol> = [T::CHAINX_SYMBOL.to_vec()].to_vec();
+        pub TokenListOf get(token_list_of): map T::AccountId => Vec<Symbol> = [T::AKRO_SYMBOL.to_vec()].to_vec();
 
         /// transfer token fee
         pub TransferTokenFee get(transfer_token_fee) config(): T::Balance;
@@ -292,9 +292,9 @@ decl_storage! {
                 let src_r = storage.clone().build_storage().unwrap();
                 let mut tmp_storage: runtime_io::TestExternalities<Blake2Hasher> = src_r.into();
                 with_externalities(&mut tmp_storage, || {
-                    // register chainx
-                    let chainx: Symbol = T::CHAINX_SYMBOL.to_vec();
-                    let t: Token = Token::new(chainx.clone(), T::CHAINX_TOKEN_DESC.to_vec(), config.chainx_precision);
+                    // register akro
+                    let akro: Symbol = T::AKRO_SYMBOL.to_vec();
+                    let t: Token = Token::new(akro.clone(), T::AKRO_TOKEN_DESC.to_vec(), config.akro_precision);
                     let zero: T::TokenBalance = Default::default();
                     if let Err(e) = Module::<T>::register_token(t, zero, zero) {
                         panic!(e);
@@ -305,7 +305,7 @@ decl_storage! {
                             panic!(e);
                         }
                         let sym = token.symbol();
-                        if sym == chainx { panic!("can't issue chainx token!"); }
+                        if sym == akro { panic!("can't issue akro token!"); }
                         if let Err(e) = Module::<T>::register_token(token.clone(), zero, zero) {
                             panic!(e);
                         }
@@ -339,7 +339,7 @@ impl<T: Trait> Module<T> {
 impl<T: Trait> Module<T> {
     // token storage
     pub fn free_token(who_sym: &(T::AccountId, Symbol)) -> T::TokenBalance {
-        if who_sym.1.as_slice() == T::CHAINX_SYMBOL {
+        if who_sym.1.as_slice() == T::AKRO_SYMBOL {
             As::sa(balances::FreeBalance::<T>::get(&who_sym.0).as_())
         } else {
             <FreeToken<T>>::get(who_sym)
@@ -347,7 +347,7 @@ impl<T: Trait> Module<T> {
     }
 
     pub fn reserved_token(who_sym: &(T::AccountId, Symbol, ReservedType)) -> T::TokenBalance {
-        if who_sym.1.as_slice() == T::CHAINX_SYMBOL {
+        if who_sym.1.as_slice() == T::AKRO_SYMBOL {
             As::sa(balances::ReservedBalance::<T>::get(&who_sym.0).as_())
         } else {
             <ReservedToken<T>>::get(who_sym)
@@ -365,7 +365,7 @@ impl<T: Trait> Module<T> {
 
     /// tatal_token of a token symbol
     pub fn total_token(symbol: &Symbol) -> T::TokenBalance {
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
+        if symbol.as_slice() == T::AKRO_SYMBOL {
             As::sa(balances::TotalIssuance::<T>::get().as_())
         } else {
             Self::total_free_token(symbol) + Self::total_reserved_token(symbol)
@@ -491,10 +491,10 @@ impl<T: Trait> Module<T> {
         }
     }
 
-    /// issue from real coin to chainx token, notice it become free token directly
+    /// issue from real coin to akro token, notice it become free token directly
     pub fn issue(who: &T::AccountId, symbol: &Symbol, value: T::TokenBalance) -> Result {
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
-            return Err("can't issue chainx token");
+        if symbol.as_slice() == T::AKRO_SYMBOL {
+            return Err("can't issue akro token");
         }
 
         Self::is_valid_token(symbol)?;
@@ -529,8 +529,8 @@ impl<T: Trait> Module<T> {
         value: T::TokenBalance,
         t: ReservedType,
     ) -> Result {
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
-            return Err("can't destroy chainx token");
+        if symbol.as_slice() == T::AKRO_SYMBOL {
+            return Err("can't destroy akro token");
         }
         Self::is_valid_token_for(who, symbol)?;
         // <T as balances::Trait>::EnsureAccountLiquid::ensure_account_liquid(who)?;
@@ -569,24 +569,24 @@ impl<T: Trait> Module<T> {
 
         let key = (who.clone(), symbol.clone());
         let reserved_key = (who.clone(), symbol.clone(), t);
-        // for chainx
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
+        // for akro
+        if symbol.as_slice() == T::AKRO_SYMBOL {
             let value: T::Balance = As::sa(value.as_() as u64); // change to balance for balances module
             let free_token: T::Balance = balances::FreeBalance::<T>::get(who);
             let reserved_token = ReservedToken::<T>::get(&reserved_key);
             let total_reserved_token = TotalReservedToken::<T>::get(symbol);
             match free_token.checked_sub(&value) {
                 Some(b) => b,
-                None => return Err("chainx free token too low to reserve"),
+                None => return Err("akro free token too low to reserve"),
             };
             let val: T::TokenBalance = As::sa(value.as_() as u128); // tokenbalance is large than balance
             let new_reserved_token = match reserved_token.checked_add(&val) {
                 Some(b) => b,
-                None => return Err("chainx reserved token too high to reserve"),
+                None => return Err("akro reserved token too high to reserve"),
             };
             let new_total_reserved_token = match total_reserved_token.checked_add(&val) {
                 Some(b) => b,
-                None => return Err("chainx total reserved token too high to reserve"),
+                None => return Err("akro total reserved token too high to reserve"),
             };
             // would subtract freebalance and add to reversed balance
             balances::Module::<T>::reserve(who, value)?;
@@ -595,7 +595,7 @@ impl<T: Trait> Module<T> {
 
             Self::deposit_event(RawEvent::ReverseToken(
                 who.clone(),
-                T::CHAINX_SYMBOL.to_vec(),
+                T::AKRO_SYMBOL.to_vec(),
                 val,
             ));
             return Ok(());
@@ -646,24 +646,24 @@ impl<T: Trait> Module<T> {
 
         let key = (who.clone(), symbol.clone());
         let reserved_key = (who.clone(), symbol.clone(), t);
-        // for chainx
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
+        // for akro
+        if symbol.as_slice() == T::AKRO_SYMBOL {
             let value: T::Balance = As::sa(value.as_() as u64); // change to balance for balances module
             let free_token: T::Balance = balances::FreeBalance::<T>::get(who);
             let reserved_token = ReservedToken::<T>::get(&reserved_key);
             let total_reserved_token = TotalReservedToken::<T>::get(symbol);
             match free_token.checked_add(&value) {
                 Some(b) => b,
-                None => return Err("chainx free token too high to unreserve"),
+                None => return Err("akro free token too high to unreserve"),
             };
             let val: T::TokenBalance = As::sa(value.as_() as u128); // tokenbalance is large than balance
             let new_reserved_token = match reserved_token.checked_sub(&val) {
                 Some(b) => b,
-                None => return Err("chainx reserved token too low to unreserve"),
+                None => return Err("akro reserved token too low to unreserve"),
             };
             let new_total_reserved_token = match total_reserved_token.checked_sub(&val) {
                 Some(b) => b,
-                None => return Err("chainx total reserved token too low to unreserve"),
+                None => return Err("akro total reserved token too low to unreserve"),
             };
             // would subtract reservedbalance and add to free balance
             balances::Module::<T>::unreserve(who, value);
@@ -672,7 +672,7 @@ impl<T: Trait> Module<T> {
 
             Self::deposit_event(RawEvent::UnreverseToken(
                 who.clone(),
-                T::CHAINX_SYMBOL.to_vec(),
+                T::AKRO_SYMBOL.to_vec(),
                 val,
             ));
             return Ok(());
@@ -721,8 +721,8 @@ impl<T: Trait> Module<T> {
         // <T as balances::Trait>::EnsureAccountLiquid::ensure_account_liquid(from).map_err(|_| TokenErr::InvalidAccount)?;
         //TODO validator`
 
-        // for chainx
-        if symbol.as_slice() == T::CHAINX_SYMBOL {
+        // for akro
+        if symbol.as_slice() == T::AKRO_SYMBOL {
             let value: T::Balance = As::sa(value.as_() as u64); // change to balance for balances module
             let from_token: T::Balance = balances::FreeBalance::<T>::get(from);
             let to_token: T::Balance = balances::FreeBalance::<T>::get(to);
@@ -797,7 +797,7 @@ impl TokenErr {
 }
 
 impl<T: Trait> Module<T> {
-    fn transfer_chainx(from: &T::AccountId, to: &T::AccountId, value: T::Balance) -> Result {
+    fn transfer_akro(from: &T::AccountId, to: &T::AccountId, value: T::Balance) -> Result {
         let from_balance = balances::Module::<T>::free_balance(from);
         let to_balance = balances::Module::<T>::free_balance(to);
 
@@ -814,7 +814,7 @@ impl<T: Trait> Module<T> {
         balances::Module::<T>::set_free_balance(&from, new_from_balance);
         balances::Module::<T>::set_free_balance_creating(&to, new_to_balance);
 
-        Self::deposit_event(RawEvent::TransferChainX(from.clone(), to.clone(), value));
+        Self::deposit_event(RawEvent::TransferAkro(from.clone(), to.clone(), value));
         Ok(())
     }
 
@@ -863,7 +863,7 @@ impl<T: Trait> Module<T> {
     }
 
     // public call
-    /// transfer token between accountid, notice the fee is chainx
+    /// transfer token between accountid, notice the fee is akro
     pub fn transfer(
         origin: T::Origin,
         dest: balances::Address<T>,
@@ -874,7 +874,7 @@ impl<T: Trait> Module<T> {
         let transactor = ensure_signed(origin)?;
         let dest = balances::Module::<T>::lookup(dest)?;
         // sub fee first
-        cxsupport::Module::<T>::handle_fee_before(
+        arml_support::Module::<T>::handle_fee_before(
             &transactor,
             Self::transfer_token_fee(),
             true,
@@ -887,11 +887,11 @@ impl<T: Trait> Module<T> {
 
         T::EnsureAccountLiquid::ensure_account_liquid(&transactor)?;
 
-        // chainx transfer
-        if sym.as_slice() == T::CHAINX_SYMBOL {
+        // akro transfer
+        if sym.as_slice() == T::AKRO_SYMBOL {
             runtime_io::print("transfer pcx");
             let value: T::Balance = As::sa(value.as_() as u64); // change to balance for balances module
-            Self::transfer_chainx(&transactor, &dest, value)
+            Self::transfer_akro(&transactor, &dest, value)
         } else {
             runtime_io::print("transfer token ---sym");
             runtime_io::print(sym.as_slice());
@@ -901,8 +901,8 @@ impl<T: Trait> Module<T> {
 
     pub fn set_free_token(who: balances::Address<T>, sym: Symbol, free: T::TokenBalance) -> Result {
         let who = balances::Module::<T>::lookup(who)?;
-        // for chainx
-        if sym.as_slice() == T::CHAINX_SYMBOL {
+        // for akro
+        if sym.as_slice() == T::AKRO_SYMBOL {
             let free: T::Balance = As::sa(free.as_() as u64); // change to balance for balances module
             balances::Module::<T>::set_free_balance(&who, free);
             return Ok(());
@@ -945,8 +945,8 @@ impl<T: Trait> Module<T> {
         res_type: ReservedType,
     ) -> Result {
         let who = balances::Module::<T>::lookup(who)?;
-        // for chainx
-        if sym.as_slice() == T::CHAINX_SYMBOL {
+        // for akro
+        if sym.as_slice() == T::AKRO_SYMBOL {
             let reserved: T::Balance = As::sa(reserved.as_() as u64); // change to balance for balances module
             balances::Module::<T>::set_reserved_balance(&who, reserved);
             return Ok(());

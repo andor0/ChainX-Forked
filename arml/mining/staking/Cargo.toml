@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-mining-staking"
+name = "arml-mining-staking"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 [dependencies]
 hex-literal = "0.1.0"
@@ -22,10 +22,10 @@ srml-system = { git = "https://github.com/paritytech/substrate", default_feature
 srml-session = { git = "https://github.com/paritytech/substrate", default_features = false }
 srml-timestamp = { git = "https://github.com/paritytech/substrate", default_features = false }
 
-cxrml-system = { path = "../../system", default_features = false }
-cxrml-support = { path = "../../support",  default_features = false }
-cxrml-associations = { path = "../../associations", default_features = false }
-cxrml-tokenbalances = { path = "../../tokenbalances", default_features = false }
+arml-system = { path = "../../system", default_features = false }
+arml-support = { path = "../../support",  default_features = false }
+arml-associations = { path = "../../associations", default_features = false }
+arml-tokenbalances = { path = "../../tokenbalances", default_features = false }
 
 [features]
 default = ["std"]
@@ -45,9 +45,9 @@ std = [
     "srml-session/std",
     "srml-system/std",
     "srml-timestamp/std",
-    # cxrml
-    "cxrml-system/std",
-    "cxrml-support/std",
-    "cxrml-associations/std",
-    "cxrml-tokenbalances/std",
+    # arml
+    "arml-system/std",
+    "arml-support/std",
+    "arml-associations/std",
+    "arml-tokenbalances/std",
 ]

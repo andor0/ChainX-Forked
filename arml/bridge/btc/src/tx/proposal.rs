@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool
+// Copyright 2018 Akropolis
 
 use super::builder::Builder;
 use super::keys::{Public, Type};

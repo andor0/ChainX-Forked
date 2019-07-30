@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 //! Staking manager: Periodically determines the best set of validators.
 
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -18,10 +18,10 @@ extern crate sr_std as rstd;
 #[macro_use]
 extern crate parity_codec_derive;
 
-extern crate cxrml_associations as associations;
-extern crate cxrml_support as cxsupport;
-extern crate cxrml_system;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_associations as associations;
+extern crate arml_support;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
 extern crate parity_codec as codec;
 extern crate sr_primitives as primitives;
 extern crate srml_balances as balances;
@@ -47,7 +47,7 @@ use runtime_support::{StorageMap, StorageValue};
 use session::OnSessionChange;
 use system::ensure_signed;
 
-use cxsupport::storage::btree_map::CodecBTreeMap;
+use arml_support::storage::btree_map::CodecBTreeMap;
 
 pub mod vote_weight;
 
@@ -501,7 +501,7 @@ impl<T: Trait> Module<T> {
     ) -> Result {
         runtime_io::print("[mining staking] register");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::register_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::register_fee(), true, || Ok(()))?;
 
         ensure!(share_count > 0, "Cannot register zero share.");
 
@@ -580,7 +580,7 @@ impl<T: Trait> Module<T> {
     fn activate(origin: T::Origin) -> Result {
         runtime_io::print("[mining staking] activate");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::activate_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::activate_fee(), true, || Ok(()))?;
 
         ensure!(
             !<IntentionProfiles<T>>::get(&who).is_active,
@@ -605,7 +605,7 @@ impl<T: Trait> Module<T> {
     fn deactivate(origin: T::Origin) -> Result {
         runtime_io::print("[mining staking] deactivate");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::deactivate_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::deactivate_fee(), true, || Ok(()))?;
 
         ensure!(
             <IntentionProfiles<T>>::get(&who).is_active,
@@ -633,7 +633,7 @@ impl<T: Trait> Module<T> {
     fn stake(origin: T::Origin, value: T::Balance) -> Result {
         runtime_io::print("[mining staking] stake");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::stake_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::stake_fee(), true, || Ok(()))?;
 
         ensure!(value.as_() > 0, "Cannot stake zero.");
 
@@ -656,7 +656,7 @@ impl<T: Trait> Module<T> {
     fn unstake(origin: T::Origin, value: T::Balance) -> Result {
         runtime_io::print("[mining staking] unstake");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::unstake_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::unstake_fee(), true, || Ok(()))?;
 
         ensure!(value.as_() > 0, "Cannot unstake zero.");
 
@@ -692,7 +692,7 @@ impl<T: Trait> Module<T> {
     ) -> Result {
         runtime_io::print("[mining staking] nominate");
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::nominate_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::nominate_fee(), true, || Ok(()))?;
 
         let target = <balances::Module<T>>::lookup(target)?;
 
@@ -746,7 +746,7 @@ impl<T: Trait> Module<T> {
     fn claim(origin: T::Origin, target: Address<T::AccountId, T::AccountIndex>) -> Result {
         runtime_io::print("[mining staking] claim");
         let source = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&source, Self::claim_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&source, Self::claim_fee(), true, || Ok(()))?;
 
         let target = <balances::Module<T>>::lookup(target)?;
 
@@ -777,7 +777,7 @@ impl<T: Trait> Module<T> {
     ) -> Result {
         runtime_io::print("[mining staking] unnominate");
         let source = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(
+        arml_support::Module::<T>::handle_fee_before(
             &source,
             Self::unnominate_fee(),
             true,

@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use super::{balances, system, Codec};
 use rstd::prelude::*;
@@ -6,12 +6,12 @@ use rstd::prelude::*;
 #[derive(PartialEq, Eq, Clone, Copy, Encode, Decode)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize, Debug))]
 pub enum TransactionType {
-    TransferChainX,
+    TransferAkro,
 }
 
 impl Default for TransactionType {
     fn default() -> Self {
-        TransactionType::TransferChainX
+        TransactionType::TransferAkro
     }
 }
 

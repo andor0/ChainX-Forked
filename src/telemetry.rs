@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 Akropolis
 
 use sr_primitives::traits::{As, Header};
 use substrate_client::BlockchainEvents;
@@ -27,10 +27,10 @@ pub fn build_telemetry(
             on_connect: Box::new(move || {
                 telemetry!("system.connected";
                             "name" => name.clone(),
-                            "implementation" => "chainx",
+                            "implementation" => "akro",
                             "version" => "0.3",
                             "config" => "",
-                            "chain" => "ChainX",
+                            "chain" => "Akropolis",
                             "authority" => is_authority
                         );
             }),
@@ -41,7 +41,7 @@ pub fn build_telemetry(
 }
 
 pub fn run_telemetry(
-    network: ::Arc<::chainx_network::NetworkService>,
+    network: ::Arc<::akro_network::NetworkService>,
     client: ::Arc<::client::TClient>,
     txpool: ::Arc<Pool<PoolApi<TClient>>>,
     handle: TaskExecutor,

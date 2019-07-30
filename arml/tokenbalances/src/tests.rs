@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use super::*;
 use mock::*;
@@ -15,7 +15,7 @@ fn test_genesis() {
         assert_eq!(
             TokenBalances::token_list(),
             vec![
-                Test::CHAINX_SYMBOL.to_vec(),
+                Test::AKRO_SYMBOL.to_vec(),
                 btc_symbol.clone(),
                 eth_symbol.clone(),
             ]
@@ -39,10 +39,10 @@ fn test_genesis() {
         assert_eq!(TokenBalances::total_free_token(btc_symbol.clone()), 100);
         assert_eq!(TokenBalances::total_reserved_token(btc_symbol.clone()), 0);
 
-        // chainx symbol for every user
+        // akro symbol for every user
         assert_eq!(
             TokenBalances::token_list_of(&0),
-            [Test::CHAINX_SYMBOL.to_vec()].to_vec()
+            [Test::AKRO_SYMBOL.to_vec()].to_vec()
         );
     });
 }
@@ -53,7 +53,7 @@ fn test_genesis_token_issue() {
         let btc_symbol = b"x-btc".to_vec();
         let eth_symbol = b"x-eth".to_vec();
         assert_eq!(
-            TokenBalances::free_token(&(3, Test::CHAINX_SYMBOL.to_vec())),
+            TokenBalances::free_token(&(3, Test::AKRO_SYMBOL.to_vec())),
             1000
         );
         assert_eq!(TokenBalances::free_token(&(3, btc_symbol.clone())), 100);
@@ -61,7 +61,7 @@ fn test_genesis_token_issue() {
 
         assert_eq!(
             TokenBalances::token_list_of(&3),
-            [Test::CHAINX_SYMBOL.to_vec(), btc_symbol, eth_symbol]
+            [Test::AKRO_SYMBOL.to_vec(), btc_symbol, eth_symbol]
         );
     })
 }
@@ -89,7 +89,7 @@ fn test_register() {
         assert_eq!(
             TokenBalances::token_list(),
             vec![
-                Test::CHAINX_SYMBOL.to_vec(),
+                Test::AKRO_SYMBOL.to_vec(),
                 btc_symbol.clone(),
                 eth_symbol.clone(),
                 t_sym.clone(),
@@ -385,44 +385,44 @@ fn test_transfer_not_init() {
         assert_ok!(TokenBalances::transfer(
             Some(a).into(),
             new_id.into(),
-            Test::CHAINX_SYMBOL.to_vec(),
+            Test::AKRO_SYMBOL.to_vec(),
             25
         ));
 
         assert_eq!(
-            TokenBalances::free_token(&(a, Test::CHAINX_SYMBOL.to_vec())),
+            TokenBalances::free_token(&(a, Test::AKRO_SYMBOL.to_vec())),
             1000 - 10 - 10 - 25 - 10
         );
         assert_eq!(
-            TokenBalances::free_token(&(new_id, Test::CHAINX_SYMBOL.to_vec())),
+            TokenBalances::free_token(&(new_id, Test::AKRO_SYMBOL.to_vec())),
             25
         );
     })
 }
 
 #[test]
-fn test_transfer_chainx() {
+fn test_transfer_akro() {
     with_externalities(&mut new_test_ext2(), || {
         let a: u64 = 1; // accountid
         let b: u64 = 2; // accountid
         assert_ok!(TokenBalances::transfer(
             Some(a).into(),
             b.into(),
-            Test::CHAINX_SYMBOL.to_vec(),
+            Test::AKRO_SYMBOL.to_vec(),
             25
         ));
 
         assert_eq!(
-            TokenBalances::free_token(&(a, Test::CHAINX_SYMBOL.to_vec())),
+            TokenBalances::free_token(&(a, Test::AKRO_SYMBOL.to_vec())),
             1000 - 10 - 25
         );
         assert_eq!(
-            TokenBalances::free_token(&(b, Test::CHAINX_SYMBOL.to_vec())),
+            TokenBalances::free_token(&(b, Test::AKRO_SYMBOL.to_vec())),
             510 + 25
         );
 
         assert_err!(
-            TokenBalances::transfer(Some(a).into(), b.into(), Test::CHAINX_SYMBOL.to_vec(), 1000),
+            TokenBalances::transfer(Some(a).into(), b.into(), Test::AKRO_SYMBOL.to_vec(), 1000),
             "balance too low to send value"
         );
     })
@@ -489,7 +489,7 @@ fn test_transfer_err() {
 
         assert_err!(
             TokenBalances::transfer(Some(b).into(), a.into(), btc_symbol.clone(), 1),
-            "chainx balance is not enough after this tx, not allow to be killed at here"
+            "akro balance is not enough after this tx, not allow to be killed at here"
         );
         assert_eq!(Balances::free_balance(&b), 500);
     })
@@ -503,7 +503,7 @@ fn test_set_token() {
         TokenBalances::issue(&a, &btc_symbol.clone(), 50).unwrap();
         assert_ok!(TokenBalances::set_free_token(
             a.into(),
-            Test::CHAINX_SYMBOL.to_vec(),
+            Test::AKRO_SYMBOL.to_vec(),
             500
         ));
         assert_eq!(Balances::free_balance(&a), 500);
@@ -565,13 +565,13 @@ fn test_char_valid() {
 }
 
 #[test]
-fn test_chainx() {
+fn test_akro() {
     with_externalities(&mut new_test_ext2(), || {
         let a: u64 = 1; // accountid
-        let sym = Test::CHAINX_SYMBOL.to_vec();
+        let sym = Test::AKRO_SYMBOL.to_vec();
         assert_err!(
             TokenBalances::issue(&a, &sym, 100),
-            "can't issue chainx token"
+            "can't issue akro token"
         );
 
         assert_ok!(TokenBalances::reserve(&a, &sym, 100, Default::default()));
@@ -591,24 +591,24 @@ fn test_chainx() {
         assert_eq!(Balances::reserved_balance(&a), 50);
         assert_err!(
             TokenBalances::destroy(&a, &sym, 50, Default::default()),
-            "can't destroy chainx token"
+            "can't destroy akro token"
         );
     })
 }
 
 #[test]
-fn test_chainx_err() {
+fn test_akro_err() {
     with_externalities(&mut new_test_ext2(), || {
         let a: u64 = 1; // accountid
-        let sym = Test::CHAINX_SYMBOL.to_vec();
+        let sym = Test::AKRO_SYMBOL.to_vec();
 
         assert_err!(
             TokenBalances::reserve(&a, &sym, 2000, Default::default()),
-            "chainx free token too low to reserve"
+            "akro free token too low to reserve"
         );
         assert_err!(
             TokenBalances::unreserve(&a, &sym, 10, Default::default()),
-            "chainx reserved token too low to unreserve"
+            "akro reserved token too low to unreserve"
         );
 
         let i: i32 = -1;
@@ -630,7 +630,7 @@ fn test_chainx_err() {
         assert_eq!(max_balance as u64, 18446744073709551615);
         assert_err!(
             TokenBalances::reserve(&a, &sym, max_balance, Default::default()),
-            "chainx free token too low to reserve"
+            "akro free token too low to reserve"
         );
     })
 }
@@ -640,7 +640,7 @@ fn test_move() {
     with_externalities(&mut new_test_ext2(), || {
         let a: u64 = 1; // accountid
         let b: u64 = 2; // accountid
-        let sym = Test::CHAINX_SYMBOL.to_vec();
+        let sym = Test::AKRO_SYMBOL.to_vec();
         assert_ok!(TokenBalances::move_free_token(&a, &b, &sym, 100));
         assert_err!(
             TokenBalances::move_free_token(&a, &b, &sym, 1000),

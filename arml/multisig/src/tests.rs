@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use substrate_primitives::{Blake2Hasher, H256};
 
@@ -41,14 +41,14 @@ impl balances::Trait for Test {
     type Event = ();
 }
 
-impl cxsystem::Trait for Test {}
+impl arml_system::Trait for Test {}
 
 impl associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+    type OnCalcFee = arml_support::Module<Test>;
     type Event = ();
 }
 
-impl cxsupport::Trait for Test {}
+impl arml_support::Trait for Test {}
 
 impl Trait for Test {
     type MultiSig = SimpleMultiSigIdFor<Test>;
@@ -290,7 +290,7 @@ fn test_multisig() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
 
@@ -365,13 +365,13 @@ fn test_not_required_owner() {
         let origin = system::RawOrigin::Signed(c.clone()).into();
         let t = TransferT::<Test> { to: a, value: 10 };
         assert_err!(
-            MultiSig::execute(origin, addr, TransactionType::TransferChainX, t.encode()),
+            MultiSig::execute(origin, addr, TransactionType::TransferAkro, t.encode()),
             "it's the owner but not required owner"
         );
 
         let origin = system::RawOrigin::Signed(b.clone()).into();
         assert_err!(
-            MultiSig::execute(origin, addr, TransactionType::TransferChainX, t.encode()),
+            MultiSig::execute(origin, addr, TransactionType::TransferAkro, t.encode()),
             "it's not the owner"
         );
 
@@ -380,7 +380,7 @@ fn test_not_required_owner() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
         // confirm success
@@ -402,7 +402,7 @@ fn test_not_exist() {
             MultiSig::execute(
                 origin,
                 0.into(),
-                TransactionType::TransferChainX,
+                TransactionType::TransferAkro,
                 t.encode()
             ),
             "the multi sig addr not exist"
@@ -421,7 +421,7 @@ fn test_not_exist() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
         let origin = system::RawOrigin::Signed(a.clone()).into();
@@ -448,7 +448,7 @@ fn test_remove() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
 
@@ -524,7 +524,7 @@ fn test_conflict() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
         let multi_sig_id = MultiSig::pending_list_item_for((addr.clone(), 0)).unwrap();
@@ -536,7 +536,7 @@ fn test_conflict() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t2.encode()
         ));
         let multi_sig_id2 = MultiSig::pending_list_item_for((addr.clone(), 1)).unwrap();
@@ -603,7 +603,7 @@ fn test_parse_err() {
         let t: Vec<u8> = vec![b't', b'e', b's', b't'];
         let origin = system::RawOrigin::Signed(a.clone()).into();
         assert_err!(
-            MultiSig::execute(origin, addr, TransactionType::TransferChainX, t),
+            MultiSig::execute(origin, addr, TransactionType::TransferAkro, t),
             "parse err for this tx data"
         );
 
@@ -612,7 +612,7 @@ fn test_parse_err() {
         t.remove(e);
         let origin = system::RawOrigin::Signed(a.clone()).into();
         assert_err!(
-            MultiSig::execute(origin, addr, TransactionType::TransferChainX, t),
+            MultiSig::execute(origin, addr, TransactionType::TransferAkro, t),
             "parse err for this tx data"
         );
 
@@ -622,7 +622,7 @@ fn test_parse_err() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t
         ));
     })
@@ -644,7 +644,7 @@ fn test_single() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
 
@@ -657,7 +657,7 @@ fn test_single() {
         assert_ok!(MultiSig::execute(
             origin,
             addr,
-            TransactionType::TransferChainX,
+            TransactionType::TransferAkro,
             t.encode()
         ));
 
@@ -668,7 +668,7 @@ fn test_single() {
         let t = TransferT::<Test> { to: a, value: 5 };
         let origin = system::RawOrigin::Signed(c.clone()).into();
         assert_err!(
-            MultiSig::execute(origin, addr, TransactionType::TransferChainX, t.encode()),
+            MultiSig::execute(origin, addr, TransactionType::TransferAkro, t.encode()),
             "it's the owner but not required owner"
         );
 

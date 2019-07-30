@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -18,8 +18,8 @@ extern crate substrate_primitives;
 extern crate srml_support as runtime_support;
 extern crate srml_system as system;
 
-extern crate cxrml_associations as associations;
-extern crate cxrml_system as cxsystem;
+extern crate arml_associations as associations;
+extern crate arml_system;
 
 // use balances::EnsureAccountLiquid;
 use primitives::traits::{As, CheckedAdd, CheckedSub, OnFinalise, Zero};
@@ -48,7 +48,7 @@ impl<T: Trait> associations::OnCalcFee<T::AccountId, T::Balance> for Module<T> {
     }
 }
 
-pub trait Trait: associations::Trait + cxsystem::Trait {}
+pub trait Trait: associations::Trait + arml_system::Trait {}
 
 impl<T: Trait> Module<T> {
     fn calc_fee_withaccount(
@@ -59,7 +59,7 @@ impl<T: Trait> Module<T> {
         let from_balance = <balances::Module<T>>::free_balance(who);
         let new_from_balance = match from_balance.checked_sub(&fee) {
             Some(b) => b,
-            None => return Err("chainx balance too low to exec this option"),
+            None => return Err("akro balance too low to exec this option"),
         };
 
         if rate.len() < 1 {
@@ -69,7 +69,7 @@ impl<T: Trait> Module<T> {
             let to_balance = <balances::Module<T>>::free_balance(&rate[0].1);
             let new_to_balance = match to_balance.checked_add(&fee) {
                 Some(b) => b,
-                None => return Err("chainx balance too high to exec this option"),
+                None => return Err("akro balance too high to exec this option"),
             };
 
             <balances::Module<T>>::set_free_balance(who, new_from_balance);
@@ -106,19 +106,19 @@ impl<T: Trait> Module<T> {
     fn calc_fee(from_who: &T::AccountId, fee: T::Balance) -> Result {
         let mut v = Vec::new();
         // 50% for block producer
-        if let Some(p) = cxsystem::Module::<T>::block_producer() {
+        if let Some(p) = arml_system::Module::<T>::block_producer() {
             v.push((5, p));
         } else {
-            v.push((5, cxsystem::Module::<T>::death_account()));
+            v.push((5, arml_system::Module::<T>::death_account()));
         }
         // 50% for relationship accountid
         if let Some(to) = associations::Module::<T>::relationship(from_who) {
             v.push((5, to))
         } else {
-            if let Some(p) = cxsystem::Module::<T>::block_producer() {
+            if let Some(p) = arml_system::Module::<T>::block_producer() {
                 v.push((5, p));
             } else {
-                v.push((5, cxsystem::Module::<T>::death_account()));
+                v.push((5, arml_system::Module::<T>::death_account()));
             }
         }
 
@@ -139,12 +139,12 @@ impl<T: Trait> Module<T> {
         let from_balance = <balances::Module<T>>::free_balance(who);
         let new_from_balance = match from_balance.checked_sub(&fee) {
             Some(b) => b,
-            None => return Err("chainx balance too low to exec this option"),
+            None => return Err("akro balance too low to exec this option"),
         };
         // <T as balances::Trait>::EnsureAccountLiquid::ensure_account_liquid(who)?;
         if check_after_open && new_from_balance < <balances::Module<T>>::existential_deposit() {
             return Err(
-                "chainx balance is not enough after this tx, not allow to be killed at here",
+                "akro balance is not enough after this tx, not allow to be killed at here",
             );
         }
 
@@ -167,12 +167,12 @@ impl<T: Trait> Module<T> {
         let from_balance = <balances::Module<T>>::free_balance(who);
         let new_from_balance = match from_balance.checked_sub(&fee) {
             Some(b) => b,
-            None => return Err("chainx balance too low to exec this option"),
+            None => return Err("akro balance too low to exec this option"),
         };
         // <T as balances::Trait>::EnsureAccountLiquid::ensure_account_liquid(who)?;
         if check_after_open && new_from_balance < <balances::Module<T>>::existential_deposit() {
             return Err(
-                "chainx balance is not enough after this tx, not allow to be killed at here",
+                "akro balance is not enough after this tx, not allow to be killed at here",
             );
         }
 

@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-multisig"
+name = "arml-multisig"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 [dependencies]
 hex-literal = "0.1.0"
@@ -17,10 +17,10 @@ srml-support = { git = "https://github.com/paritytech/substrate", default_featur
 srml-system = { git = "https://github.com/paritytech/substrate", default_features = false }
 srml-balances = { git = "https://github.com/paritytech/substrate", default_features = false }
 
-# cxrml module
-cxrml-system = { path = "../system", default-features = false }
-cxrml-associations = { path = "../associations", default-features = false }
-cxrml-support = { path = "../support", default_features = false }
+# arml module
+arml-system = { path = "../system", default-features = false }
+arml-associations = { path = "../associations", default-features = false }
+arml-support = { path = "../support", default_features = false }
 
 [features]
 default = ["std"]
@@ -36,7 +36,7 @@ std=[
     "srml-support/std",
     "srml-system/std",
     "srml-balances/std",
-    "cxrml-system/std",
-    "cxrml-associations/std",
-    "cxrml-support/std",
+    "arml-system/std",
+    "arml-associations/std",
+    "arml-support/std",
 ]

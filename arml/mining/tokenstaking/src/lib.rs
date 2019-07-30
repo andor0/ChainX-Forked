@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! this module is for tokenstaking, virtual mining for holding tokens
 
@@ -36,16 +36,16 @@ extern crate srml_system as system;
 extern crate srml_timestamp as timestamp;
 
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_exchange_pendingorders as pendingorders;
-extern crate cxrml_funds_financialrecords as financialrecords;
-extern crate cxrml_mining_staking as staking;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_exchange_pendingorders as pendingorders;
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_mining_staking as staking;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
 
-extern crate cxrml_bridge_btc as btc;
+extern crate arml_bridge_btc as btc;
 
 #[cfg(test)]
 mod tests;
@@ -207,7 +207,7 @@ impl<T: Trait> Module<T> {
 impl<T: Trait> Module<T> {
     fn claim(origin: T::Origin, sym: Symbol) -> Result {
         let who = ensure_signed(origin)?;
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::fee(), true, || Ok(()))?;
 
         let mut profs = Module::<T>::virtual_profs_for(&sym);
         let key = (who.clone(), sym.clone());
@@ -296,7 +296,7 @@ impl<T: Trait> OnNewSessionForTokenStaking<T::AccountId, T::Balance> for Module<
     fn token_staking_info() -> Vec<(Validator<T::AccountId>, T::Balance)> {
         runtime_io::print("new session token stake  --sym--pcx--average_price");
         let mut syms: Vec<Symbol> = tokenbalances::Module::<T>::valid_token_list();
-        if let Some(index) = syms.iter().position(|x| x.as_slice() == T::CHAINX_SYMBOL) {
+        if let Some(index) = syms.iter().position(|x| x.as_slice() == T::AKRO_SYMBOL) {
             syms.remove(index);
         }
 
@@ -304,7 +304,7 @@ impl<T: Trait> OnNewSessionForTokenStaking<T::AccountId, T::Balance> for Module<
             .filter(|s| is_valid_exchange_token::<T>(s))
             .map(|sym| {
                 let o = OrderPair {
-                    first: T::CHAINX_SYMBOL.to_vec(),
+                    first: T::AKRO_SYMBOL.to_vec(),
                     second: sym.clone(),
                 };
                 // get price
@@ -467,7 +467,7 @@ fn change_vote<T: Trait>(who: &T::AccountId, sym: &Symbol, value: T::TokenBalanc
 
 fn is_valid_exchange_token<T: Trait>(sym: &Symbol) -> bool {
     let o = OrderPair {
-        first: T::CHAINX_SYMBOL.to_vec(),
+        first: T::AKRO_SYMBOL.to_vec(),
         second: sym.clone(),
     };
     pendingorders::Module::<T>::pair_detail_of(o).is_some()

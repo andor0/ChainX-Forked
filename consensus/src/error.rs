@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! Errors that can occur during the consensus process.
 
@@ -6,7 +6,7 @@ use primitives::AuthorityId;
 
 error_chain! {
     links {
-        ChainXApi(::chainx_api::Error, ::chainx_api::ErrorKind);
+        AkroApi(::akro_api::Error, ::akro_api::ErrorKind);
         Bft(::bft::Error, ::bft::ErrorKind);
     }
 

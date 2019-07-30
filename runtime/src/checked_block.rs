@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! Typesafe block interaction.
 
@@ -7,7 +7,7 @@ use super::{
 };
 use timestamp::Call as TimestampCall;
 //use session::Call as SessionCall;
-use cxsystem::Call as CXSystemCall;
+use arml_system::Call as CXSystemCall;
 
 /// Provides a type-safe wrapper around a structurally valid block.
 pub struct CheckedBlock {
@@ -49,7 +49,7 @@ impl CheckedBlock {
     }
 
     /// Extract the timestamp from the block.
-    pub fn timestamp(&self) -> ::chainx_primitives::Timestamp {
+    pub fn timestamp(&self) -> ::akro_primitives::Timestamp {
         let x = self
             .inner
             .extrinsics
@@ -61,7 +61,7 @@ impl CheckedBlock {
 
         match x {
             Some(x) => x,
-            None => panic!("Invalid chainx block asserted at {:?}", self.file_line),
+            None => panic!("Invalid akro block asserted at {:?}", self.file_line),
         }
     }
 
@@ -104,7 +104,7 @@ impl ::std::ops::Deref for CheckedBlock {
 /// Assert that a block is structurally valid. May lead to panic in the future
 /// in case it isn't.
 #[macro_export]
-macro_rules! assert_chainx_block {
+macro_rules! assert_akro_block {
     ($block: expr) => {
         $crate::CheckedBlock::new_unchecked($block, file!(), line!())
     };

@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-funds-withdrawal"
+name = "arml-funds-withdrawal"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 
 [dependencies]
@@ -20,15 +20,15 @@ srml-balances = { git = "https://github.com/paritytech/substrate", default_featu
 srml-timestamp = { git = "https://github.com/paritytech/substrate", default_features = false }
 srml-consensus = { git = "https://github.com/paritytech/substrate", default_features = false }
 
-# cxrml
-cxrml-system = { path = "../../system", default-features = false }
-cxrml-associations = { path = "../../associations", default-features = false }
-cxrml-support = { path = "../../support", default_features = false }
-cxrml-tokenbalances = { path = "../../tokenbalances", default_features = false }
-cxrml-funds-financialrecords = { path = "../financialrecords", default_features = false }
+# arml
+arml-system = { path = "../../system", default-features = false }
+arml-associations = { path = "../../associations", default-features = false }
+arml-support = { path = "../../support", default_features = false }
+arml-tokenbalances = { path = "../../tokenbalances", default_features = false }
+arml-funds-financialrecords = { path = "../financialrecords", default_features = false }
 
 # bridge
-cxrml-bridge-btc = { path = "../../bridge/btc", default_features = false }
+arml-bridge-btc = { path = "../../bridge/btc", default_features = false }
 
 base58 = { version = "0.1", optional = true }
 
@@ -48,13 +48,13 @@ std=[
     "srml-balances/std",
     "srml-timestamp/std",
     "srml-consensus/std",
-    "cxrml-system/std",
-    "cxrml-associations/std",
-    "cxrml-support/std",
-    "cxrml-tokenbalances/std",
-    "cxrml-funds-financialrecords/std",
+    "arml-system/std",
+    "arml-associations/std",
+    "arml-support/std",
+    "arml-tokenbalances/std",
+    "arml-funds-financialrecords/std",
     # bridge
-    "cxrml-bridge-btc/std",
+    "arml-bridge-btc/std",
 
     # other
     "base58",

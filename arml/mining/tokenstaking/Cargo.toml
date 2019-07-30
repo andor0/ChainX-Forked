@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-mining-tokenstaking"
+name = "arml-mining-tokenstaking"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 
 [dependencies]
@@ -19,15 +19,15 @@ srml-system = { git = "https://github.com/paritytech/substrate", default_feature
 srml-timestamp = { git = "https://github.com/paritytech/substrate", default_features = false }
 srml-balances = { git = "https://github.com/paritytech/substrate", default_features = false }
 
-# chainx runtime module
-cxrml-system = { path = "../../system", default_features = false }
-cxrml-support = { path = "../../support",  default_features = false }
-cxrml-associations = { path = "../../associations", default_features = false }
-cxrml-tokenbalances = { path = "../../tokenbalances", default_features = false }
-cxrml-mining-staking = { path = "../staking", default_features = false }
-cxrml-funds-financialrecords = { path = "../../funds/financialrecords", default_features = false }
-cxrml-exchange-pendingorders = { path = "../../exchange/pendingorders", default_features = false }
-cxrml-bridge-btc = { path = "../../bridge/btc", default_features = false }
+# akro runtime module
+arml-system = { path = "../../system", default_features = false }
+arml-support = { path = "../../support",  default_features = false }
+arml-associations = { path = "../../associations", default_features = false }
+arml-tokenbalances = { path = "../../tokenbalances", default_features = false }
+arml-mining-staking = { path = "../staking", default_features = false }
+arml-funds-financialrecords = { path = "../../funds/financialrecords", default_features = false }
+arml-exchange-pendingorders = { path = "../../exchange/pendingorders", default_features = false }
+arml-bridge-btc = { path = "../../bridge/btc", default_features = false }
 
 [features]
 default = ["std"]
@@ -44,13 +44,13 @@ std=[
     "srml-system/std",
     "srml-timestamp/std",
     "srml-balances/std",
-    # cxrml
-    "cxrml-system/std",
-    "cxrml-support/std",
-    "cxrml-associations/std",
-    "cxrml-tokenbalances/std",
-    "cxrml-mining-staking/std",
-    "cxrml-funds-financialrecords/std",
-    "cxrml-exchange-pendingorders/std",
-    "cxrml-bridge-btc/std",
+    # arml
+    "arml-system/std",
+    "arml-support/std",
+    "arml-associations/std",
+    "arml-tokenbalances/std",
+    "arml-mining-staking/std",
+    "arml-funds-financialrecords/std",
+    "arml-exchange-pendingorders/std",
+    "arml-bridge-btc/std",
 ]

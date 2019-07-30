@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool
+// Copyright 2018 Akropolis
 
 use codec::Decode;
 use rstd::marker::PhantomData;
@@ -483,7 +483,7 @@ pub fn handle_output<T: Trait>(
     for (index, output) in tx.outputs.iter().enumerate() {
         let script = &output.script_pubkey;
         let script: Script = script.clone().into();
-        // bind address [btc address --> chainx AccountId]
+        // bind address [btc address --> akro AccountId]
         if script.is_null_data_script() {
             let data = script.extract_rear(':');
             let slice: Vec<u8> = match from(data) {
@@ -574,11 +574,11 @@ pub fn handle_output<T: Trait>(
     <UTXOStorage<T>>::add(new_utxos.clone());
 
     if register {
-        let chainxaddr = <AddressMap<T>>::get(send_address.clone()).unwrap();
+        let akroaddr = <AddressMap<T>>::get(send_address.clone()).unwrap();
         let account = (
             tx.hash(),
             send_address.clone(),
-            chainxaddr,
+            akroaddr,
             time,
             channel[2..].to_vec(),
             tx_type,
@@ -628,7 +628,7 @@ mod tests {
     #[test]
     fn test_account_id() {
         let script = Script::from(
-            "chainx:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
+            "akro:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
                 .as_bytes()
                 .to_vec(),
         );
@@ -648,7 +648,7 @@ mod tests {
     #[test]
     fn test_cert() {
         let script = Script::from(
-            "chainx:66990:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
+            "akro:66990:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
                 .as_bytes()
                 .to_vec(),
         );
@@ -677,7 +677,7 @@ mod tests {
     #[test]
     fn test_cert() {
         let script = Script::from(
-            "chainx:66990:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
+            "akro:66990:5HnDcuKFCvsR42s8Tz2j2zLHLZAaiHG4VNyJDa7iLRunRuhM"
                 .as_bytes()
                 .to_vec(),
         );

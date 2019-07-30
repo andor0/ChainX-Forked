@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use codec::Codec;
 use runtime_support::dispatch::Result;

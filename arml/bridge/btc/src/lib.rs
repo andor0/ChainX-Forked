@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! this module is for btc-bridge
 
@@ -40,13 +40,13 @@ extern crate srml_system as system;
 extern crate srml_timestamp as timestamp;
 
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_funds_financialrecords as financial_records;
-extern crate cxrml_mining_staking as staking;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_funds_financialrecords as financial_records;
+extern crate arml_mining_staking as staking;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
 
 // bitcoin-rust
 extern crate bit_vec;
@@ -79,7 +79,7 @@ use runtime_support::{StorageMap, StorageValue};
 use ser::deserialize;
 use system::ensure_signed;
 
-use cxsupport::storage::linked_node::{LinkedNodeCollection, Node, NodeIndex, NodeT};
+use arml_support::storage::linked_node::{LinkedNodeCollection, Node, NodeIndex, NodeT};
 
 pub use blockchain::BestHeader;
 use blockchain::Chain;
@@ -376,7 +376,7 @@ impl<T: Trait> Module<T> {
 
         // orphan block check
         if <BlockHeaderFor<T>>::exists(&header.previous_header_hash) == false {
-            return Err("can't find the prev header in ChainX, may be a orphan block");
+            return Err("can't find the prev header in Akro, may be a orphan block");
         }
         // check
         {

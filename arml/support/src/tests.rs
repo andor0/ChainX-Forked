@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use substrate_primitives::{Blake2Hasher, H256};
 
@@ -38,7 +38,7 @@ impl balances::Trait for Test {
     type Event = ();
 }
 
-impl cxsystem::Trait for Test {}
+impl arml_system::Trait for Test {}
 
 impl associations::Trait for Test {
     type OnCalcFee = CXSupport;
@@ -48,7 +48,7 @@ impl associations::Trait for Test {
 impl Trait for Test {}
 
 type Balances = balances::Module<Test>;
-type CXSystem = cxsystem::Module<Test>;
+type CXSystem = arml_system::Module<Test>;
 type CXSupport = Module<Test>;
 
 pub fn new_test_ext() -> runtime_io::TestExternalities<Blake2Hasher> {
@@ -69,9 +69,9 @@ pub fn new_test_ext() -> runtime_io::TestExternalities<Blake2Hasher> {
         .build_storage()
         .unwrap(),
     );
-    // cxsystem
+    // arml_system
     r.extend(
-        cxsystem::GenesisConfig::<Test> { death_account: 100 }
+        arml_system::GenesisConfig::<Test> { death_account: 100 }
             .build_storage()
             .unwrap(),
     );

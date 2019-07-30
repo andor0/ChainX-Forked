@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with Substrate.  If not, see <https://www.gnu.org/licenses/>.
 
 //! Test utilities
 
@@ -25,7 +25,7 @@ use runtime_io;
 use substrate_primitives::{Blake2Hasher, H256};
 use tokenbalances::{DescString, SymbolString};
 use {
-    associations, balances, consensus, cxrml_system, cxsupport, session, system, timestamp,
+    associations, balances, consensus, arml_system, arml_support, session, system, timestamp,
     tokenbalances, GenesisConfig, Module, Trait,
 };
 
@@ -71,16 +71,16 @@ impl timestamp::Trait for Test {
     const TIMESTAMP_SET_POSITION: u32 = 0;
     type Moment = u64;
 }
-impl cxsupport::Trait for Test {}
-impl cxrml_system::Trait for Test {}
-impl cxrml_associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+impl arml_support::Trait for Test {}
+impl arml_system::Trait for Test {}
+impl arml_associations::Trait for Test {
+    type OnCalcFee = arml_support::Module<Test>;
     type Event = ();
 }
 pub type TokenBalance = u128;
 impl tokenbalances::Trait for Test {
-    const CHAINX_SYMBOL: SymbolString = b"pcx";
-    const CHAINX_TOKEN_DESC: DescString = b"this is pcx for mock";
+    const AKRO_SYMBOL: SymbolString = b"pcx";
+    const AKRO_TOKEN_DESC: DescString = b"this is pcx for mock";
     type TokenBalance = TokenBalance;
     type OnMoveToken = ();
     type Event = ();
@@ -162,7 +162,7 @@ pub fn new_test_ext(
             intention_profiles: initial_authorities
                 .clone()
                 .into_iter()
-                .map(|i| (i, b"ChainX".to_vec(), b"url".to_vec()))
+                .map(|i| (i, b"Akro".to_vec(), b"url".to_vec()))
                 .collect(),
             validator_count: 7,
             shares_per_cert: 45,
@@ -204,5 +204,5 @@ pub type System = system::Module<Test>;
 pub type Balances = balances::Module<Test>;
 pub type Session = session::Module<Test>;
 pub type Timestamp = timestamp::Module<Test>;
-pub type Associations = cxrml_associations::Module<Test>;
+pub type Associations = arml_associations::Module<Test>;
 pub type Staking = Module<Test>;

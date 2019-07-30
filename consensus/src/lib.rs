@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 extern crate parity_codec as codec;
 extern crate sr_primitives as runtime_primitives;
@@ -9,10 +9,10 @@ extern crate substrate_network;
 extern crate substrate_primitives as primitives;
 extern crate substrate_transaction_pool;
 
-extern crate chainx_api;
-extern crate chainx_pool;
-extern crate chainx_primitives;
-extern crate chainx_runtime;
+extern crate akro_api;
+extern crate akro_pool;
+extern crate akro_primitives;
+extern crate akro_runtime;
 
 extern crate exit_future;
 extern crate parking_lot;
@@ -29,8 +29,8 @@ mod evaluation;
 mod offline_tracker;
 mod service;
 
-use chainx_api::ChainXApi;
-use chainx_primitives::{
+use akro_api::AkroApi;
+use akro_primitives::{
     AccountId, Block, BlockId, BlockNumber, Hash, Header, SessionKey, Timestamp,
 };
 use codec::{Decode, Encode};
@@ -44,7 +44,7 @@ use std::time::{Duration, Instant};
 use tokio::runtime::TaskExecutor;
 use tokio::timer::Delay;
 
-type TransactionPool<A> = substrate_transaction_pool::Pool<chainx_pool::PoolApi<A>>;
+type TransactionPool<A> = substrate_transaction_pool::Pool<akro_pool::PoolApi<A>>;
 
 pub use self::error::{Error, ErrorKind};
 pub use self::offline_tracker::OfflineTracker;
@@ -73,10 +73,10 @@ pub trait Network {
     ) -> (Self::Input, Self::Output);
 }
 
-/// ChainX proposer factory.
+/// Akro proposer factory.
 pub struct ProposerFactory<N, P>
 where
-    P: ChainXApi + Send + Sync + 'static,
+    P: AkroApi + Send + Sync + 'static,
 {
     /// The client instance.
     pub client: Arc<P>,
@@ -95,7 +95,7 @@ where
 impl<N, P> bft::Environment<Block> for ProposerFactory<N, P>
 where
     N: Network,
-    P: ChainXApi + Send + Sync + 'static,
+    P: AkroApi + Send + Sync + 'static,
 {
     type Proposer = Proposer<P>;
     type Input = N::Input;
@@ -146,8 +146,8 @@ where
     }
 }
 
-/// The ChainX proposer logic.
-pub struct Proposer<C: ChainXApi + Send + Sync> {
+/// The Akro proposer logic.
+pub struct Proposer<C: AkroApi + Send + Sync> {
     client: Arc<C>,
     start: Instant,
     local_key: Arc<ed25519::Pair>,
@@ -161,7 +161,7 @@ pub struct Proposer<C: ChainXApi + Send + Sync> {
     minimum_timestamp: u64,
 }
 
-impl<C: ChainXApi + Send + Sync> Proposer<C> {
+impl<C: AkroApi + Send + Sync> Proposer<C> {
     fn primary_index(&self, round_number: usize, _len: usize) -> usize {
         use primitives::uint::U256;
 
@@ -205,15 +205,15 @@ impl<C: ChainXApi + Send + Sync> Proposer<C> {
 
 impl<C> bft::Proposer<Block> for Proposer<C>
 where
-    C: ChainXApi + Send + Sync,
+    C: AkroApi + Send + Sync,
 {
     type Error = Error;
     type Create = Result<Block, Error>;
     type Evaluate = Box<Future<Item = bool, Error = Error>>;
 
     fn propose(&self) -> Self::Create {
-        use chainx_api::BlockBuilder;
-        use chainx_primitives::InherentData;
+        use akro_api::BlockBuilder;
+        use akro_primitives::InherentData;
         use runtime_primitives::traits::{BlakeTwo256, Hash as HashT};
 
         const MAX_VOTE_OFFLINE_SECONDS: Duration = Duration::from_secs(60);
@@ -403,8 +403,8 @@ where
     }
 
     fn import_misbehavior(&self, misbehavior: Vec<(AuthorityId, bft::Misbehavior<Hash>)>) {
-        use chainx_primitives::UncheckedExtrinsic as GenericExtrinsic;
-        use chainx_runtime::{Call, ConsensusCall, UncheckedExtrinsic};
+        use akro_primitives::UncheckedExtrinsic as GenericExtrinsic;
+        use akro_runtime::{Call, ConsensusCall, UncheckedExtrinsic};
         use rhododendron::Misbehavior as GenericMisbehavior;
         use runtime_primitives::bft::{MisbehaviorKind, MisbehaviorReport};
 
@@ -468,7 +468,7 @@ where
             let local_id = self.local_key.public().0.into();
             let extrinsic = UncheckedExtrinsic {
                 signature: Some((
-                    chainx_runtime::RawAddress::Id(local_id),
+                    akro_runtime::RawAddress::Id(local_id),
                     signature,
                     payload.0,
                     Era::immortal(),

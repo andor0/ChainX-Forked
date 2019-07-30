@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 Akropolis
 
 use std::path::PathBuf;
 use Arc;
@@ -6,8 +6,8 @@ use Arc;
 use client_db;
 use substrate_client;
 
-pub use chainx_api::{TBackend, TClient, TClientBlockBuilder, TExecutor};
-use chainx_executor::NativeExecutor;
+pub use akro_api::{TBackend, TClient, TClientBlockBuilder, TExecutor};
+use akro_executor::NativeExecutor;
 use cli::ChainSpec;
 use state_machine::ExecutionStrategy;
 use state_db::PruningMode;

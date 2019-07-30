@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-bridge-btc"
+name = "arml-bridge-btc"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 
 [dependencies]
@@ -20,22 +20,22 @@ srml-balances = { git = "https://github.com/paritytech/substrate", default-featu
 srml-consensus = { git = "https://github.com/paritytech/substrate", default-features = false }
 srml-timestamp = { git = "https://github.com/paritytech/substrate", default-features = false }
 srml-session = { git = "https://github.com/paritytech/substrate", default_features = false }
-cxrml-system = { path = "../../system", default-features = false }
-cxrml-associations = { path = "../../associations", default-features = false }
-cxrml-support = { path = "../../support", default-features = false }
-cxrml-tokenbalances = { path = "../../tokenbalances", default-features = false }
-cxrml-funds-financialrecords = { path = "../../funds/financialrecords", default-features = false }
-cxrml-mining-staking = { path = "../../mining/staking", default-features = false }
+arml-system = { path = "../../system", default-features = false }
+arml-associations = { path = "../../associations", default-features = false }
+arml-support = { path = "../../support", default-features = false }
+arml-tokenbalances = { path = "../../tokenbalances", default-features = false }
+arml-funds-financialrecords = { path = "../../funds/financialrecords", default-features = false }
+arml-mining-staking = { path = "../../mining/staking", default-features = false }
 
 # bitcoin-rust
-chain = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-primitives = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-serialization = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-bitcrypto = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-script = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-keys = { git = "https://github.com/chainx-org/bitcoin-rust", default-features = false }
-merkle = { git = "https://github.com/chainx-org/merkle.git", default-features = false }
-bit-vec =  { git = "https://github.com/chainx-org/bit-vec.git", default-features = false }
+chain = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+primitives = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+serialization = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+bitcrypto = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+script = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+keys = { git = "https://github.com/akropolis.io/bitcoin-rust", default-features = false }
+merkle = { git = "https://github.com/akropolis.io/merkle.git", default-features = false }
+bit-vec =  { git = "https://github.com/akropolis.io/bit-vec.git", default-features = false }
 rustc-hex = { version = "2", optional = true }
 base58 = { version = "0.1", optional = true }
 
@@ -59,12 +59,12 @@ std=[
     "srml-consensus/std",
     "srml-timestamp/std",
     "srml-session/std",
-    "cxrml-system/std",
-    "cxrml-associations/std",
-    "cxrml-support/std",
-    "cxrml-tokenbalances/std",
-    "cxrml-funds-financialrecords/std",
-    "cxrml-mining-staking/std",
+    "arml-system/std",
+    "arml-associations/std",
+    "arml-support/std",
+    "arml-tokenbalances/std",
+    "arml-funds-financialrecords/std",
+    "arml-mining-staking/std",
 
     # bitcoin-rust
     "chain/std",

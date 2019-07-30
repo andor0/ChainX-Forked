@@ -12,7 +12,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+// along with Substrate.  If not, see <https://www.gnu.org/licenses/>.
 
 //! Tests for the module.
 
@@ -55,12 +55,12 @@ fn initialize_should_work() {
         assert_eq!(Staking::nominator_profiles(&10).nominees, [10]);
 
         assert_eq!(
-            Associations::channel_relationship(&b"ChainX".to_vec()),
+            Associations::channel_relationship(&b"Akro".to_vec()),
             Some(10)
         );
         assert_eq!(
             Associations::channel_relationship_rev(&10),
-            Some(b"ChainX".to_vec())
+            Some(b"Akro".to_vec())
         );
     });
 }

@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-support"
+name = "arml-support"
 version = "0.3.0"
-authors = ["Chainpool <https://www.chainx.org>"]
+authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
 hex-literal = "0.1.0"
@@ -17,9 +17,9 @@ srml-support = { git = "https://github.com/paritytech/substrate", default_featur
 srml-system = { git = "https://github.com/paritytech/substrate", default_features = false }
 srml-balances = { git = "https://github.com/paritytech/substrate", default_features = false }
 
-# chainx runtime module
-cxrml-system = { path = "../system", default_features = false }
-cxrml-associations = { path = "../associations", default_features = false }
+# akro runtime module
+arml-system = { path = "../system", default_features = false }
+arml-associations = { path = "../associations", default_features = false }
 
 [features]
 default = ["std"]
@@ -35,7 +35,7 @@ std=[
     "srml-support/std",
     "srml-system/std",
     "srml-balances/std",
-    # cxrml
-    "cxrml-system/std",
-    "cxrml-associations/std",
+    # arml
+    "arml-system/std",
+    "arml-associations/std",
 ]

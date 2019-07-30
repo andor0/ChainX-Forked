@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 extern crate substrate_bft as bft;
 extern crate substrate_client;
@@ -14,14 +14,14 @@ extern crate sr_primitives;
 extern crate substrate_state_db as state_db;
 extern crate substrate_state_machine as state_machine;
 
-extern crate chainx_api;
-extern crate chainx_consensus as consensus;
-extern crate chainx_executor;
-extern crate chainx_network;
-extern crate chainx_pool;
-extern crate chainx_primitives;
-extern crate chainx_rpc;
-extern crate chainx_runtime;
+extern crate akro_api;
+extern crate akro_consensus as consensus;
+extern crate akro_executor;
+extern crate akro_network;
+extern crate akro_pool;
+extern crate akro_primitives;
+extern crate akro_rpc;
+extern crate akro_runtime;
 
 extern crate ansi_term;
 extern crate clap;
@@ -51,11 +51,11 @@ mod telemetry;
 use substrate_client::BlockchainEvents;
 use substrate_primitives::{ed25519, ed25519::Pair, storage::StorageKey, twox_128};
 
-use chainx_api::TClient;
-use chainx_network::consensus::ConsensusNetwork;
-use chainx_pool::{Pool, PoolApi, TransactionPool};
-use chainx_primitives::{Block, BlockId, Hash, Timestamp};
-use chainx_runtime::{BlockPeriod, Runtime as ChainXRuntime, StorageValue};
+use akro_api::TClient;
+use akro_network::consensus::ConsensusNetwork;
+use akro_pool::{Pool, PoolApi, TransactionPool};
+use akro_primitives::{Block, BlockId, Hash, Timestamp};
+use akro_runtime::{BlockPeriod, Runtime as akroRuntime, StorageValue};
 use cli::ChainSpec;
 
 use codec::Decode;
@@ -112,7 +112,7 @@ fn main() {
             }),
     );
 
-    let db_path = matches.value_of("db-path").unwrap_or("./.chainx");
+    let db_path = matches.value_of("db-path").unwrap_or("./.akro");
     let client = client::build_client(db_path, chainspec, pruning);
     
     let (exit_send, exit) = exit_future::signal();
@@ -231,7 +231,7 @@ fn main() {
         let block_delay = client
             .storage(
                 &block_id,
-                &StorageKey(twox_128(BlockPeriod::<ChainXRuntime>::key()).to_vec()),
+                &StorageKey(twox_128(BlockPeriod::<akroRuntime>::key()).to_vec()),
             )
             .unwrap()
             .and_then(|data| Timestamp::decode(&mut data.0.as_slice()))

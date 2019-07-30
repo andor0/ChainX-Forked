@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use primitives::traits::As;
 use runtime_support::dispatch::Result;

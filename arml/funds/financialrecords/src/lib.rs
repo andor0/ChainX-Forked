@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -35,13 +35,13 @@ extern crate srml_support as runtime_support;
 extern crate srml_balances as balances;
 extern crate srml_system as system;
 
-// for chainx runtime module lib
+// for akro runtime module lib
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
 
 #[cfg(test)]
 mod tests;
@@ -53,7 +53,7 @@ use runtime_primitives::traits::{OnFinalise, As};
 use runtime_support::dispatch::Result;
 use runtime_support::{StorageMap, StorageValue};
 
-use cxsupport::storage::linked_node::{LinkedNodeCollection, MultiNodeIndex, Node, NodeT};
+use arml_support::storage::linked_node::{LinkedNodeCollection, MultiNodeIndex, Node, NodeT};
 pub use tokenbalances::{ReservedType, Symbol};
 
 pub trait OnDepositToken<AccountId, TokenBalance> {
@@ -363,8 +363,8 @@ impl<T: Trait> Module<T> {
 
     /// deposit/withdrawal pre-process
     fn before(who: &T::AccountId, sym: &Symbol, is_withdrawal: bool) -> Result {
-        if sym.as_slice() == T::CHAINX_SYMBOL {
-            return Err("can't deposit/withdrawal chainx token");
+        if sym.as_slice() == T::AKRO_SYMBOL {
+            return Err("can't deposit/withdrawal akro token");
         }
 
         let r = if is_withdrawal {

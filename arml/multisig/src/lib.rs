@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! this module is for multisig, but now this is just for genesis multisig addr, not open for public.
 
@@ -36,12 +36,12 @@ extern crate srml_support as runtime_support;
 extern crate srml_balances as balances;
 extern crate srml_system as system;
 
-// for chainx runtime module lib
+// for akro runtime module lib
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
+extern crate arml_system;
 
 #[cfg(test)]
 mod tests;
@@ -66,7 +66,7 @@ pub trait MultiSigFor<AccountId: Sized, Hash: Sized> {
     fn multi_sig_id_for(who: &AccountId, addr: &AccountId, data: &[u8]) -> Hash;
 }
 
-pub trait Trait: balances::Trait + cxsupport::Trait {
+pub trait Trait: balances::Trait + arml_support::Trait {
     type MultiSig: MultiSigFor<Self::AccountId, Self::Hash>;
     /// The overarching event type.
     type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
@@ -379,7 +379,7 @@ impl<T: Trait> Module<T> {
         }
 
         let multi_addr: T::AccountId = T::MultiSig::multi_sig_addr_for(account_id);
-        <cxsupport::Module<T>>::handle_fee_before(account_id, Self::deploy_fee(), true, move || {
+        <arml_support::Module<T>>::handle_fee_before(account_id, Self::deploy_fee(), true, move || {
             let origin = system::RawOrigin::Signed(account_id.clone()).into();
             let to: balances::Address<T> = balances::address::Address::Id(multi_addr.clone());
 
@@ -427,7 +427,7 @@ impl<T: Trait> Module<T> {
 
             let t = Transaction::new(tx_type, data.clone());
 
-            <cxsupport::Module<T>>::handle_fee_before(&from, Self::exec_fee(), true, || {
+            <arml_support::Module<T>>::handle_fee_before(&from, Self::exec_fee(), true, || {
                 let multi_sig_id: T::Hash;
                 if req_num == 1 {
                     // real exec
@@ -466,7 +466,7 @@ impl<T: Trait> Module<T> {
                 return Err("no pending tx for this addr and id or it has finished");
             }
             let t = ret.unwrap();
-            <cxsupport::Module<T>>::handle_fee_before(&from, Self::confirm_fee(), true, || {
+            <arml_support::Module<T>>::handle_fee_before(&from, Self::confirm_fee(), true, || {
                 // del tx first and execute later
                 Self::remove_tx_for(&multi_sig_addr, multi_sig_id);
                 // real exec
@@ -520,7 +520,7 @@ impl<T: Trait> Module<T> {
 impl<T: Trait> Module<T> {
     fn tx_check(tx_type: TransactionType, data: Vec<u8>) -> Result {
         match tx_type {
-            TransactionType::TransferChainX => {
+            TransactionType::TransferAkro => {
                 if let None = TransferT::<T>::decode(&mut data.as_slice()) {
                     return Err("parse err for this tx data");
                 }
@@ -532,7 +532,7 @@ impl<T: Trait> Module<T> {
     fn exec_tx(addr: &T::AccountId, tx: Transaction) -> Result {
         let data: Vec<u8> = tx.data();
         match tx.tx_type() {
-            TransactionType::TransferChainX => {
+            TransactionType::TransferAkro => {
                 let t = TransferT::<T>::decode(&mut data.as_slice()).unwrap();
                 let origin = system::RawOrigin::Signed(addr.clone()).into();
                 let to: balances::Address<T> = balances::address::Address::Id(t.to);

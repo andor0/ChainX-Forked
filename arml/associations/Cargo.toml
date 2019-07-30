@@ -1,7 +1,7 @@
 [package]
-name = "cxrml-associations"
+name = "arml-associations"
 version = "0.3.0"
-authors = ["Chainpool <http://chainx.org>"]
+authors = ["Akropolis <https://akropolis.io>"]
 
 
 [dependencies]

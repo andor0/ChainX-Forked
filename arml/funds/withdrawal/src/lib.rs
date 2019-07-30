@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! this module is for funds-withdrawal
 
@@ -38,16 +38,16 @@ extern crate srml_system as system;
 #[cfg(test)]
 extern crate srml_timestamp as timestamp;
 
-// chainx runtime module
+// akro runtime module
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_funds_financialrecords as financialrecords;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
-// chainx runtime module bridge
-extern crate cxrml_bridge_btc as btc;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
+// akro runtime module bridge
+extern crate arml_bridge_btc as btc;
 
 #[cfg(test)]
 extern crate base58;
@@ -112,7 +112,7 @@ impl<T: Trait> Module<T> {
         runtime_io::print("[funds withdrawal] withdraw");
         let who = ensure_signed(origin)?;
 
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
+        arml_support::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
 
         let _d = Self::verify_addr(&sym, &addr, &ext)?;
 

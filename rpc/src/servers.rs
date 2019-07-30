@@ -1,4 +1,4 @@
-//! chainx RPC servers.
+//! akro RPC servers.
 
 use apis;
 use http;
@@ -61,7 +61,7 @@ where
 }
 
 /// Start HTTP server listening on given address.
-pub fn start_http(addr: &std::net::SocketAddr, io: RpcHandler) -> io::Result<http::Server> {
+pub fn start_http(addr: &std::net::SocketAddr, io: RpcHandler) -> io::Result<https::Server> {
     http::ServerBuilder::new(io)
         .threads(4)
         .rest_api(http::RestApi::Unsecure)

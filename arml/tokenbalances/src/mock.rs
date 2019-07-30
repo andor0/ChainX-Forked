@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use substrate_primitives::{Blake2Hasher, H256};
 
@@ -37,21 +37,21 @@ impl balances::Trait for Test {
     type Event = ();
 }
 
-impl cxsystem::Trait for Test {}
+impl arml_system::Trait for Test {}
 
 impl associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+    type OnCalcFee = arml_support::Module<Test>;
     type Event = ();
 }
 
-impl cxsupport::Trait for Test {}
+impl arml_support::Trait for Test {}
 
 // define tokenbalances module type
 pub type TokenBalance = u128;
 
 impl Trait for Test {
-    const CHAINX_SYMBOL: SymbolString = b"pcx";
-    const CHAINX_TOKEN_DESC: DescString = b"this is pcx for mock";
+    const AKRO_SYMBOL: SymbolString = b"pcx";
+    const AKRO_TOKEN_DESC: DescString = b"this is pcx for mock";
     type TokenBalance = TokenBalance;
     type Event = ();
     type OnMoveToken = ();
@@ -86,7 +86,7 @@ pub fn new_test_ext() -> runtime_io::TestExternalities<Blake2Hasher> {
 
     r.extend(
         GenesisConfig::<Test> {
-            chainx_precision: 8,
+            akro_precision: 8,
             token_list: vec![(t, [(3, 100)].to_vec()), (t2, [(3, 100)].to_vec())],
             transfer_token_fee: 10,
         }
@@ -120,7 +120,7 @@ pub fn err_test_ext() -> runtime_io::TestExternalities<Blake2Hasher> {
 
     r.extend(
         GenesisConfig::<Test> {
-            chainx_precision: 8,
+            akro_precision: 8,
             token_list: vec![(t, [(3, 100)].to_vec()), (t2, [(3, 100)].to_vec())],
             transfer_token_fee: 10,
         }
@@ -154,7 +154,7 @@ pub fn new_test_ext2() -> runtime_io::TestExternalities<Blake2Hasher> {
 
     r.extend(
         GenesisConfig::<Test> {
-            chainx_precision: 8,
+            akro_precision: 8,
             token_list: vec![(t, [(3, 100)].to_vec()), (t2, [(3, 100)].to_vec())],
             transfer_token_fee: 10,
         }

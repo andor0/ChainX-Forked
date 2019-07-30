@@ -1,7 +1,7 @@
 [package]
-name = "chainx-runtime"
+name = "akro-runtime"
 version = "0.3.0"
-authors = ["Chainpool <http://www.chainx.org>"]
+authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
 rustc-hex = "1.0"
@@ -27,25 +27,25 @@ srml-system = { git = "https://github.com/paritytech/substrate" }
 srml-timestamp = { git = "https://github.com/paritytech/substrate" }
 srml-treasury = { git = "https://github.com/paritytech/substrate" }
 sr-version = { git = "https://github.com/paritytech/substrate" }
-chainx-primitives = { path = "../primitives" }
+akro-primitives = { path = "../primitives" }
 
-# chainx runtime module
-cxrml-system = { path = "../cxrml/system" }
-cxrml-support = { path = "../cxrml/support" }
-cxrml-tokenbalances = { path = "../cxrml/tokenbalances" }
-cxrml-multisig = { path = "../cxrml/multisig" }
-cxrml-associations = { path = "../cxrml/associations" }
+# akro runtime module
+arml-system = { path = "../arml/system" }
+arml-support = { path = "../arml/support" }
+arml-tokenbalances = { path = "../arml/tokenbalances" }
+arml-multisig = { path = "../arml/multisig" }
+arml-associations = { path = "../arml/associations" }
 # mining
-cxrml-mining-staking = { path = "../cxrml/mining/staking" }
-cxrml-mining-tokenstaking = { path = "../cxrml/mining/tokenstaking" }
+arml-mining-staking = { path = "../arml/mining/staking" }
+arml-mining-tokenstaking = { path = "../arml/mining/tokenstaking" }
 # bridge
-cxrml-bridge-btc = { path = "../cxrml/bridge/btc" }
+arml-bridge-btc = { path = "../arml/bridge/btc" }
 # funds
-cxrml-funds-financialrecords = { path = "../cxrml/funds/financialrecords" }
-cxrml-funds-withdrawal = { path = "../cxrml/funds/withdrawal" }
+arml-funds-financialrecords = { path = "../arml/funds/financialrecords" }
+arml-funds-withdrawal = { path = "../arml/funds/withdrawal" }
 # exchange
-cxrml-exchange-pendingorders = { path = "../cxrml/exchange/pendingorders" }
-cxrml-exchange-matchorder = { path = "../cxrml/exchange/matchorder" }
+arml-exchange-pendingorders = { path = "../arml/exchange/pendingorders" }
+arml-exchange-matchorder = { path = "../arml/exchange/matchorder" }
 
 [features]
 default = ["std"]
@@ -64,20 +64,20 @@ std = [
     "srml-system/std",
     "srml-timestamp/std",
     "sr-version/std",
-    "chainx-primitives/std",
+    "akro-primitives/std",
     "serde_derive",
     "serde/std",
     "safe-mix/std",
-    "cxrml-system/std",
-    "cxrml-support/std",
-    "cxrml-tokenbalances/std",
-    "cxrml-multisig/std",
-    "cxrml-associations/std",
-    "cxrml-mining-staking/std",
-    "cxrml-mining-tokenstaking/std",
-    "cxrml-bridge-btc/std",
-    "cxrml-funds-financialrecords/std",
-    "cxrml-funds-withdrawal/std",
-    "cxrml-exchange-pendingorders/std",
-    "cxrml-exchange-matchorder/std",
+    "arml-system/std",
+    "arml-support/std",
+    "arml-tokenbalances/std",
+    "arml-multisig/std",
+    "arml-associations/std",
+    "arml-mining-staking/std",
+    "arml-mining-tokenstaking/std",
+    "arml-bridge-btc/std",
+    "arml-funds-financialrecords/std",
+    "arml-funds-withdrawal/std",
+    "arml-exchange-pendingorders/std",
+    "arml-exchange-matchorder/std",
 ]

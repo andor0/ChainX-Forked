@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 akropolis
 extern crate base58;
 extern crate chain as btc_chain;
 extern crate cxrml_exchange_pendingorders;
@@ -9,7 +9,7 @@ extern crate substrate_primitives;
 
 use self::base58::FromBase58;
 use self::cxrml_exchange_pendingorders::OrderPair;
-use chainx_runtime::{
+use akro_runtime::{
     AssociationsConfig, BalancesConfig, BalancesConfigCopy, BridgeOfBTC, BridgeOfBTCConfig,
     CXSystemConfig, ConsensusConfig, ContractConfig, CouncilVotingConfig, DemocracyConfig,
     GenesisConfig, MatchOrderConfig, MultiSigConfig, Params, PendingOrdersConfig, Perbill, Permill,
@@ -69,7 +69,7 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
     GenesisConfig {
         consensus: Some(ConsensusConfig {
             code: include_bytes!(
-            "../runtime/wasm/target/wasm32-unknown-unknown/release/chainx_runtime.compact.wasm"
+            "../runtime/wasm/target/wasm32-unknown-unknown/release/akro_runtime.compact.wasm"
             ).to_vec(),
             authorities: initial_authorities.clone(),
         }),
@@ -114,7 +114,7 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
             fee_buy_account: substrate_primitives::H256([1; 32]),
         }),
         tokenbalances: Some(TokenBalancesConfig {
-            chainx_precision: pcx_precision,
+            akro_precision: pcx_precision,
             // token_list: Vec<(Token, Vec<(T::AccountId, T::TokenBalance)>)>
             // e.g. [("btc", [(account1, value), (account2, value)].to_vec()), ("eth", [(account1, value), (account2, value)].to_vec())]
             token_list: vec![
@@ -139,7 +139,7 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
             current_era: 0,
             bonding_duration: 28,
             intentions: initial_authorities.clone().into_iter().map(|i| i.0.into()).collect(),
-            intention_profiles: vec![(auth1.0.into(), b"Genesis".to_vec(), b"chainx.org".to_vec())],
+            intention_profiles: vec![(auth1.0.into(), b"Genesis".to_vec(), b"akro.org".to_vec())],
             minimum_validator_count: 1,
             validator_count: 7,
             sessions_per_era: 5,
@@ -198,7 +198,7 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
         pendingorders: Some(PendingOrdersConfig {
             order_fee: 0,
             pair_list: vec![
-                (OrderPair { first: Runtime::CHAINX_SYMBOL.to_vec(), second: BridgeOfBTC::SYMBOL.to_vec() }, 8)
+                (OrderPair { first: Runtime::akro_SYMBOL.to_vec(), second: BridgeOfBTC::SYMBOL.to_vec() }, 8)
             ],
             max_command_id: 0,
             average_price_len:10000,

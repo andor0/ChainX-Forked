@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use codec::Encode;
 use rstd::marker::PhantomData;

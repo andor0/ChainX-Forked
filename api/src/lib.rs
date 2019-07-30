@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool.
+// Copyright 2018 Akropolis.
 
 extern crate parity_codec as codec;
 extern crate sr_io as runtime_io;
@@ -9,11 +9,11 @@ extern crate substrate_client_db as client_db;
 extern crate substrate_executor as substrate_executor;
 extern crate substrate_primitives;
 
-extern crate chainx_executor;
-extern crate chainx_primitives as primitives;
-extern crate chainx_runtime as runtime;
+extern crate akro_executor;
+extern crate akro_primitives as primitives;
+extern crate akro_runtime as runtime;
 
-use chainx_executor::NativeExecutor;
+use akro_executor::NativeExecutor;
 use client::block_builder::BlockBuilder as ClientBlockBuilder;
 pub use client::error::{Error, ErrorKind, Result};
 use primitives::{
@@ -39,14 +39,14 @@ pub trait BlockBuilder {
 }
 
 pub type TBackend = client_db::Backend<Block>;
-pub type TExecutor = client::LocalCallExecutor<TBackend, NativeExecutor<chainx_executor::Executor>>;
+pub type TExecutor = client::LocalCallExecutor<TBackend, NativeExecutor<akro_executor::Executor>>;
 pub type TClient = client::Client<TBackend, TExecutor, Block>;
 pub type TClientBlockBuilder = ClientBlockBuilder<TBackend, TExecutor, Block, Blake2Hasher>;
 
-/// Trait encapsulating the ChainX API.
+/// Trait encapsulating the Akro API.
 ///
 /// All calls should fail when the exact runtime is unknown.
-pub trait ChainXApi:
+pub trait AkroApi:
     CurrentHeight<BlockNumber = BlockNumber> + BlockNumberToHash<BlockNumber = BlockNumber, Hash = Hash>
 {
     /// The block builder for this API type.
@@ -95,8 +95,8 @@ pub trait ChainXApi:
     ) -> Result<Vec<UncheckedExtrinsic>>;
 }
 
-/// Mark for all ChainX API implementations, that are making use of state data, stored locally.
-pub trait LocalChainXApi: ChainXApi {}
+/// Mark for all Akro API implementations, that are making use of state data, stored locally.
+pub trait LocalAkroApi: AkroApi {}
 
-/// Mark for all ChainX API implementations, that are fetching required state data from remote nodes.
-pub trait RemoteChainXApi: ChainXApi {}
+/// Mark for all Akro API implementations, that are fetching required state data from remote nodes.
+pub trait RemoteAkroApi: AkroApi {}

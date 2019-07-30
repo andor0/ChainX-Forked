@@ -1,8 +1,8 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! Tracks offline validators.
 
-use chainx_primitives::AccountId;
+use akro_primitives::AccountId;
 
 use std::collections::HashMap;
 use std::time::{Duration, Instant};

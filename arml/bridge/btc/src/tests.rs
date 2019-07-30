@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 extern crate srml_consensus as consensus;
 extern crate srml_session as session;
@@ -56,18 +56,18 @@ impl timestamp::Trait for Test {
     type Moment = u64;
 }
 
-impl cxsystem::Trait for Test {}
+impl arml_system::Trait for Test {}
 
 impl associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+    type OnCalcFee = arml_support::Module<Test>;
     type Event = ();
 }
 
-impl cxsupport::Trait for Test {}
+impl arml_support::Trait for Test {}
 
 impl tokenbalances::Trait for Test {
-    const CHAINX_SYMBOL: tokenbalances::SymbolString = b"pcx";
-    const CHAINX_TOKEN_DESC: tokenbalances::DescString = b"this is pcx for mock";
+    const AKRO_SYMBOL: tokenbalances::SymbolString = b"pcx";
+    const AKRO_TOKEN_DESC: tokenbalances::DescString = b"this is pcx for mock";
     type TokenBalance = u128;
     type Event = ();
     type OnMoveToken = ();
@@ -615,7 +615,7 @@ fn test_orphan() {
         let (c1, _) = generate_blocks();
         assert_err!(
             BridgeOfBTC::process_header(c1.get(2).unwrap().clone(), &3),
-            "can't find the prev header in ChainX, may be a orphan block"
+            "can't find the prev header in Akro, may be a orphan block"
         );
         assert_ok!(BridgeOfBTC::process_header(c1.get(1).unwrap().clone(), &2));
         assert_ok!(BridgeOfBTC::process_header(c1.get(2).unwrap().clone(), &3));
@@ -695,11 +695,11 @@ fn test_genesis2() {
         assert_eq!(best.number, 2);
         assert_err!(
             BridgeOfBTC::process_header(c1.get(0).unwrap().clone(), &1),
-            "can't find the prev header in ChainX, may be a orphan block"
+            "can't find the prev header in Akro, may be a orphan block"
         );
         assert_err!(
             BridgeOfBTC::process_header(c1.get(1).unwrap().clone(), &1),
-            "can't find the prev header in ChainX, may be a orphan block"
+            "can't find the prev header in Akro, may be a orphan block"
         );
         assert_err!(
             BridgeOfBTC::process_header(c1.get(2).unwrap().clone(), &1),

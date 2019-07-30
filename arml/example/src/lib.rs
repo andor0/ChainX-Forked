@@ -26,8 +26,8 @@ extern crate srml_support as support;
 extern crate srml_balances as balances;
 extern crate srml_system as system;
 
-// for chainx runtime module lib
-extern crate cxrml_support as cxsupport;
+// for akro runtime module lib
+extern crate arml_support;
 
 use codec::Codec;
 use primitives::traits::{As, OnFinalise, SimpleArithmetic};
@@ -37,11 +37,11 @@ use support::StorageValue;
 
 //use system::ensure_signed;
 
-use cxsupport::storage::linked_node::{
+use arml_support::storage::linked_node::{
     LinkedNodeCollection, MultiNodeIndex, MultiNodeIndexT, Node, NodeIndex, NodeT,
 };
 
-use cxsupport::storage::btree_map::CodecBTreeMap;
+use arml_support::storage::btree_map::CodecBTreeMap;
 
 pub trait Trait: balances::Trait {
     /// The overarching event type.
@@ -201,7 +201,7 @@ mod tests {
 
     use support::{StorageMap, StorageValue};
     //    use support::generator::StorageMap;
-    use cxsupport::storage::linked_node::Node;
+    use arml_support::storage::linked_node::Node;
 
     impl_outer_origin! {
         pub enum Origin for Test {}

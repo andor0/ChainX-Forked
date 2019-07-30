@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -38,11 +38,11 @@ extern crate srml_support as runtime_support;
 extern crate srml_balances as balances;
 extern crate srml_system as system;
 
-// for chainx runtime module lib
-extern crate cxrml_associations as associations;
-extern crate cxrml_support as cxsupport;
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+// for akro runtime module lib
+extern crate arml_associations as associations;
+extern crate arml_support;
+extern crate arml_system;
+extern crate arml_tokenbalances as tokenbalances;
 
 #[cfg(test)]
 mod tests;
@@ -294,7 +294,7 @@ impl<T: Trait> Module<T> {
         //手续费
         let fee = Self::order_fee();
         let sender = who;
-        <cxsupport::Module<T>>::handle_fee_after(sender, fee, true, || {
+        <arml_support::Module<T>>::handle_fee_after(sender, fee, true, || {
             //计算总额
             let mut reserve_last: T::Amount = Zero::zero();
 
@@ -512,7 +512,7 @@ impl<T: Trait> Module<T> {
         //从channel模块获得channel_name对应的account
         match <associations::Module<T>>::channel_relationship(&order.channel) {
             Some(relation) => relation,
-            None => <cxsystem::Module<T>>::death_account(), //如果没有渠道，那么就销毁
+            None => <arml_system::Module<T>>::death_account(), //如果没有渠道，那么就销毁
         }
     }
     pub fn fill_order(
@@ -860,21 +860,21 @@ impl<T: Trait> Module<T> {
             return Err(msg);
         }
 
-        if to == &<cxsystem::Module<T>>::fee_buy_account()
-            && symbol.clone() == <T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec()
+        if to == &<arml_system::Module<T>>::fee_buy_account()
+            && symbol.clone() == <T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec()
         {
             //前面自动生成的buy交易，不计算手续费 80%直接销毁 20% 给渠道
             if let Err(msg) = Self::dispatch_fee(
                 symbol,
                 value,
                 from,
-                &<cxsystem::Module<T>>::death_account(),
+                &<arml_system::Module<T>>::death_account(),
                 &channel.clone(),
             ) {
                 return Err(msg);
             };
             after_fee = Zero::zero();
-        } else if from == &<cxsystem::Module<T>>::fee_buy_account() {
+        } else if from == &<arml_system::Module<T>>::fee_buy_account() {
             // 和手续费买盘的对手盘，不收手续费
             if let Err(e) = <tokenbalances::Module<T>>::move_free_token(
                 &from.clone(),
@@ -886,7 +886,7 @@ impl<T: Trait> Module<T> {
             }
             after_fee = Zero::zero();
         } else {
-            if symbol.clone() == <T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec() {
+            if symbol.clone() == <T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec() {
                 let discount_fee: <T as tokenbalances::Trait>::TokenBalance =
                     As::sa(Self::discount_fee(&to, &symbol.clone(), As::sa(fee.as_())).as_());
                 if let Err(e) = <tokenbalances::Module<T>>::move_free_token(
@@ -902,7 +902,7 @@ impl<T: Trait> Module<T> {
                     symbol,
                     discount_fee,
                     from,
-                    &<cxsystem::Module<T>>::death_account(),
+                    &<arml_system::Module<T>>::death_account(),
                     &channel.clone(),
                 ) {
                     return Err(msg);
@@ -917,7 +917,7 @@ impl<T: Trait> Module<T> {
                 };
                 match option_average_price {
                     Some(average_price) => {
-                        let conversion_fee:<T as tokenbalances::Trait>::TokenBalance = match <tokenbalances::Module<T>>::token_info(<T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec()) {
+                        let conversion_fee:<T as tokenbalances::Trait>::TokenBalance = match <tokenbalances::Module<T>>::token_info(<T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec()) {
                             Some((token, _)) => {
                                 As::sa((10_u128.pow(token.precision().as_())*fee.as_())/average_price.as_()) //换算pcx手续费
                             }
@@ -929,7 +929,7 @@ impl<T: Trait> Module<T> {
                         let discount_fee:<T as tokenbalances::Trait>::TokenBalance=As::sa(Self::discount_fee(&to,&symbol.clone(),As::sa(conversion_fee.as_())).as_());
                         if <tokenbalances::Module<T>>::free_token(&(
                             to.clone(),
-                            <T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec(),
+                            <T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec(),
                         )) >= discount_fee
                         {
                             // pcx余额足够
@@ -942,15 +942,15 @@ impl<T: Trait> Module<T> {
                                 return Err(e.info());
                             }
                             if let Err(msg) = Self::dispatch_fee(
-                                &<T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec(),
+                                &<T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec(),
                                 discount_fee,
                                 to,
-                                &<cxsystem::Module<T>>::death_account(),
+                                &<arml_system::Module<T>>::death_account(),
                                 &channel.clone(),
                             ) {
                                 return Err(msg);
                             };
-                            fee_symbol = <T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec();
+                            fee_symbol = <T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec();
                             after_fee = discount_fee;
                         } else {
                             if let Err(e) = <tokenbalances::Module<T>>::move_free_token(
@@ -963,7 +963,7 @@ impl<T: Trait> Module<T> {
                             }
                             if let Err(e) = <tokenbalances::Module<T>>::move_free_token(
                                 &from.clone(),
-                                &<cxsystem::Module<T>>::fee_buy_account(),
+                                &<arml_system::Module<T>>::fee_buy_account(),
                                 &symbol.clone(),
                                 fee,
                             ) {
@@ -986,7 +986,7 @@ impl<T: Trait> Module<T> {
                         }
                         if let Err(e) = <tokenbalances::Module<T>>::move_free_token(
                             &from.clone(),
-                            &<cxsystem::Module<T>>::fee_buy_account(),
+                            &<arml_system::Module<T>>::fee_buy_account(),
                             &symbol.clone(),
                             fee,
                         ) {
@@ -1008,7 +1008,7 @@ impl<T: Trait> Module<T> {
     ) {
         Self::deposit_event(RawEvent::FeeBuy(symbol.clone(), sum, channel.clone()));
 
-        match Self::get_pair_by(&<T as tokenbalances::Trait>::CHAINX_SYMBOL.to_vec(), symbol) {
+        match Self::get_pair_by(&<T as tokenbalances::Trait>::AKRO_SYMBOL.to_vec(), symbol) {
             Some(pair) => {
                 if sum > Zero::zero() {
                     if let Some(last_price) = <LastPrice<T>>::get(pair.clone()) {
@@ -1046,7 +1046,7 @@ impl<T: Trait> Module<T> {
                         None => b"".to_vec(),
                     };
                 let _ = Self::do_put_order(
-                    &<cxsystem::Module<T>>::fee_buy_account(),
+                    &<arml_system::Module<T>>::fee_buy_account(),
                     &buy.0,
                     OrderType::Buy,
                     buy.1,

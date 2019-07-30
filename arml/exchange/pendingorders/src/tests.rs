@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 use substrate_primitives::{Blake2Hasher, H256};
 
@@ -40,20 +40,20 @@ impl balances::Trait for Test {
     type Event = ();
 }
 
-impl cxsystem::Trait for Test {}
+impl arml_system::Trait for Test {}
 
 impl associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+    type OnCalcFee = arml_support::Module<Test>;
     type Event = ();
 }
-impl cxsupport::Trait for Test {}
+impl arml_support::Trait for Test {}
 
 // define tokenbalances module type
 pub type TokenBalance = u128;
 
 impl tokenbalances::Trait for Test {
-    const CHAINX_SYMBOL: SymbolString = b"pcx";
-    const CHAINX_TOKEN_DESC: DescString = b"this is pcx for mock";
+    const AKRO_SYMBOL: SymbolString = b"pcx";
+    const AKRO_TOKEN_DESC: DescString = b"this is pcx for mock";
     type TokenBalance = TokenBalance;
     type Event = ();
     type OnMoveToken = ();
@@ -559,14 +559,14 @@ fn test_fill_fee() {
 
         assert_eq!(
             TokenBalances::free_token(&(
-                cxsystem::Module::<Test>::fee_buy_account(),
+                arml_system::Module::<Test>::fee_buy_account(),
                 t_sym_eth.clone()
             )),
             0
         );
         assert_eq!(
             TokenBalances::free_token(&(
-                cxsystem::Module::<Test>::fee_buy_account(),
+                arml_system::Module::<Test>::fee_buy_account(),
                 t_sym_eos.clone()
             )),
             5
