@@ -1,6 +1,6 @@
 // Copyright 2018 Chainpool.
 
-//! this module is for chainx system
+//! this module is for akro system
 
 #![cfg_attr(not(feature = "std"), no_std)]
 // for encode/decode
