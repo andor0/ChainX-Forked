@@ -139,7 +139,7 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
             current_era: 0,
             bonding_duration: 28,
             intentions: initial_authorities.clone().into_iter().map(|i| i.0.into()).collect(),
-            intention_profiles: vec![(auth1.0.into(), b"Genesis".to_vec(), b"akro.org".to_vec())],
+            intention_profiles: vec![(auth1.0.into(), b"Genesis".to_vec(), b"akropolis.io".to_vec())],
             minimum_validator_count: 1,
             validator_count: 7,
             sessions_per_era: 5,
