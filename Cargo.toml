@@ -32,8 +32,6 @@ akro-network = { path = "./network" }
 akro-pool = { path = "./pool" }
 akro-rpc = { path = "./rpc" }
 akro-api = { path = "./api" }
-arml-exchange-pendingorders = { path = "./arml/exchange/pendingorders" }
-arml-tokenbalances = { path = "./arml/tokenbalances" }
 
 env_logger = "0.5.13"
 rhododendron = "0.3"
@@ -49,11 +47,6 @@ base58 = "0.1"
 slog = "^2"
 log = "0.3"
 
-# bitcoin-rust
-primitives = { git = "https://github.com/akropolis.io/bitcoin-rust" }
-chain = { git = "https://github.com/akropolis.io/bitcoin-rust" }
-keys = { git = "https://github.com/akropolis.io/bitcoin-rust" }
-
 [workspace]
 members = [
     "primitives",
@@ -66,15 +59,7 @@ members = [
     "api",
     "arml/system",
     "arml/support",
-    "arml/tokenbalances",
-    "arml/multisig",
-    "arml/associations",
-    "arml/bridge/btc",
     "arml/mining/staking",
     "arml/mining/tokenstaking",
-    "arml/funds/financialrecords",
-    "arml/funds/withdrawal",
-    "arml/exchange/pendingorders",
-    "arml/exchange/matchorder",
     "arml/example",
 ]

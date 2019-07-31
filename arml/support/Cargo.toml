@@ -19,7 +19,6 @@ srml-balances = { git = "https://github.com/paritytech/substrate", default_featu
 
 # akro runtime module
 arml-system = { path = "../system", default_features = false }
-arml-associations = { path = "../associations", default_features = false }
 
 [features]
 default = ["std"]
@@ -37,5 +36,4 @@ std=[
     "srml-balances/std",
     # arml
     "arml-system/std",
-    "arml-associations/std",
 ]
