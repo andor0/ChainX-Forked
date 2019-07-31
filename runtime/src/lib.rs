@@ -37,7 +37,6 @@ extern crate srml_treasury as treasury;
 extern crate substrate_primitives;
 // cx runtime module
 extern crate arml_associations as associations;
-extern crate arml_multisig as multisig;
 extern crate arml_support;
 extern crate arml_system;
 extern crate arml_tokenbalances as tokenbalances;
@@ -89,7 +88,6 @@ pub use timestamp::BlockPeriod;
 #[cfg(feature = "std")]
 pub use bridge_btc::Params;
 #[cfg(feature = "std")]
-pub use multisig::BalancesConfigCopy;
 
 pub fn inherent_extrinsics(data: InherentData) -> Vec<UncheckedExtrinsic> {
     let mut inherent = vec![generic::UncheckedMortalExtrinsic::new_unsigned(
@@ -236,11 +234,6 @@ impl tokenbalances::Trait for Runtime {
     type OnMoveToken = ();
 }
 
-impl multisig::Trait for Runtime {
-    type MultiSig = multisig::SimpleMultiSigIdFor<Runtime>;
-    type Event = Event;
-}
-
 impl associations::Trait for Runtime {
     type OnCalcFee = CXSupport;
     type Event = Event;
@@ -317,7 +310,6 @@ construct_runtime!(
         Contract: contract::{Module, Call, Config, Event<T>},
         // akro runtime module
         TokenBalances: tokenbalances,
-        MultiSig: multisig,
         Associations: associations,
         // funds
         FinancialRecords: financialrecords::{Module, Call, Storage, Event<T>},
