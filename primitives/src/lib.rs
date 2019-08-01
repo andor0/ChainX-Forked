@@ -17,28 +17,32 @@ extern crate serde;
 #[cfg(feature = "std")]
 #[macro_use]
 extern crate serde_derive;
-#[macro_use]
-extern crate parity_codec_derive;
 
 #[cfg(feature = "std")]
 use primitives::bytes;
+
+use codec::{Encode, Decode};
+use primitives::ed25519;
 
 use rstd::prelude::*;
 use runtime_primitives::generic;
 use runtime_primitives::traits::BlakeTwo256;
 
+/// The type used by authorities to prove their ID.
+pub type AuthoritySignature = ed25519::Signature;
+
 /// Signature on candidate's block data by a collator.
-pub type CandidateSignature = ::runtime_primitives::Ed25519Signature;
+pub type CandidateSignature = ed25519::Signature;
 
 /// The Ed25519 pub key of an session that belongs to an authority of the relay chain. This is
 /// exactly equivalent to what the substrate calls an "authority".
-pub type SessionKey = primitives::AuthorityId;
+pub type SessionKey = ed25519::Public;
 
 /// A hash of some data used by the relay chain.
 pub type Hash = primitives::H256;
 
 /// Header type.
-pub type Header = generic::Header<BlockNumber, BlakeTwo256, generic::DigestItem<Hash, SessionKey>>;
+pub type Header = generic::Header<BlockNumber, BlakeTwo256, generic::DigestItem<Hash, SessionKey, AuthoritySignature>>;
 
 /// Opaque, encoded, unchecked extrinsic.
 #[derive(PartialEq, Eq, Clone, Default, Encode, Decode)]
@@ -58,7 +62,7 @@ pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 pub type BlockNumber = u64;
 
 /// Alias to Ed25519 pubkey that identifies an account on the relay chain.
-pub type AccountId = primitives::H256;
+pub type AccountId = primitives::ed25519::Public;
 
 /// The type for looking up accounts. We don't expect more than 4 billion of them, but you
 /// never know...
@@ -70,7 +74,7 @@ pub type ChainId = u32;
 /// Index of a transaction in the relay chain. 32-bit should be plenty.
 pub type Index = u64;
 
-pub type Signature = runtime_primitives::Ed25519Signature;
+pub type Signature = ed25519::Signature;
 
 /// A timestamp: seconds since the unix epoch.
 pub type Timestamp = u64;
@@ -101,9 +105,7 @@ pub struct InherentData {
 
 /// Candidate receipt type.
 #[derive(PartialEq, Eq, Clone, Encode, Decode)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize, Debug))]
-#[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
-#[cfg_attr(feature = "std", serde(deny_unknown_fields))]
+#[cfg_attr(feature = "std", derive(Debug))]
 pub struct CandidateReceipt {
     /// akro account id.
     pub collator: AccountId,
@@ -117,7 +119,7 @@ impl CandidateReceipt {
     /// Get the blake2_256 hash
     #[cfg(feature = "std")]
     pub fn hash(&self) -> Hash {
-        use runtime_primitives::traits::{BlakeTwo256, Hash};
+        use runtime_primitives::traits::Hash;
         BlakeTwo256::hash_of(self)
     }
 

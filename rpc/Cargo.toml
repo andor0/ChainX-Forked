@@ -9,7 +9,7 @@ jsonrpc-core = { git="https://github.com/paritytech/jsonrpc.git" }
 jsonrpc-http-server = { git = "https://github.com/paritytech/jsonrpc.git" }
 jsonrpc-pubsub = { git = "https://github.com/paritytech/jsonrpc.git" }
 jsonrpc-ws-server = { git = "https://github.com/paritytech/jsonrpc.git" }
-jsonrpc-macros = { git="https://github.com/paritytech/jsonrpc.git" }
+jsonrpc-macros = { git="https://github.com/paritytech/jsonrpc.git", rev = '8ffc7f30a633d405adae5ead3d6e6422b0c612d8' }
 sr-primitives = { git = "https://github.com/paritytech/substrate" }
 substrate-primitives = { git = "https://github.com/paritytech/substrate" }
 substrate-rpc-servers = { git = "https://github.com/paritytech/substrate" }

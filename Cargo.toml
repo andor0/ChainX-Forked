@@ -4,26 +4,28 @@ version = "0.3.0"
 authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
-jsonrpc-macros = { git="https://github.com/paritytech/jsonrpc.git" }
-substrate-network = { git = "https://github.com/paritytech/substrate" }
-substrate-network-libp2p = { git = "https://github.com/paritytech/substrate" }
-sr-primitives = { git = "https://github.com/paritytech/substrate" }
-substrate-primitives = { git = "https://github.com/paritytech/substrate" }
-substrate-client = { git = "https://github.com/paritytech/substrate" }
-substrate-client-db = { git = "https://github.com/paritytech/substrate" }
-substrate-keyring = { git = "https://github.com/paritytech/substrate" }
-substrate-state-db = { git = "https://github.com/paritytech/substrate" }
-substrate-state-machine = { git = "https://github.com/paritytech/substrate" }
-substrate-telemetry = { git = "https://github.com/paritytech/substrate" }
-substrate-bft = { git = "https://github.com/paritytech/substrate", default_features = false }
-substrate-rpc-servers = { git = "https://github.com/paritytech/substrate" }
-srml-balances = { git = "https://github.com/paritytech/substrate" }
+jsonrpc-macros = { git="https://github.com/paritytech/jsonrpc.git", rev = '8ffc7f30a633d405adae5ead3d6e6422b0c612d8' }
+substrate-network = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-network-libp2p = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+sr-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-client = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-client-db = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-keyring = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-state-db = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-state-machine = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-telemetry = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+#substrate-bft = { git = "https://github.com/paritytech/substrate", default_features = false }
+substrate-rpc-servers = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+srml-balances = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+
 jsonrpc-http-server = { git = "https://github.com/paritytech/jsonrpc" }
 jsonrpc-ws-server = { git = "https://github.com/paritytech/jsonrpc" }
 ctrlc = { version = "3.0", features = ["termination"] }
 serde = { version = "1.0", default_features = false }
 serde_derive = { version = "1.0", optional = true }
 parity-codec = { version = "2.0" }
+
 akro-primitives = { path = "./primitives" }
 akro-consensus = { path = "./consensus" }
 akro-executor = { path = "./executor" }
@@ -46,6 +48,11 @@ clap = "2.30.0"
 base58 = "0.1"
 slog = "^2"
 log = "0.3"
+
+substrate-bip39 = { path="vendor/substrate-bip39" }
+
+[patch.'https://github.com/paritytech/substrate-bip39']
+substrate-bip39 = { path="vendor/substrate-bip39" }
 
 [workspace]
 members = [

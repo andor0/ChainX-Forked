@@ -11,22 +11,24 @@ integer-sqrt = { git = "https://github.com/paritytech/integer-sqrt-rs.git", bran
 safe-mix = { version = "1.0", default_features = false}
 parity-codec = { version = "2.0", default-features = false }
 parity-codec-derive = { version = "2.0" }
-sr-std = { git = "https://github.com/paritytech/substrate", default-features = false }
-sr-io = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-support = { git = "https://github.com/paritytech/substrate", default-features = false }
-substrate-primitives = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-consensus = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-contract = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-balances = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-council = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-democracy = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-executive = { git = "https://github.com/paritytech/substrate", default-features = false }
-sr-primitives = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-session = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-system = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-timestamp = { git = "https://github.com/paritytech/substrate", default-features = false }
-srml-treasury = { git = "https://github.com/paritytech/substrate", default-features = false }
-sr-version = { git = "https://github.com/paritytech/substrate", default-features = false }
+
+sr-std = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+sr-io = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-support = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+substrate-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-consensus = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-contract = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-balances = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-council = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-democracy = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-executive = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+sr-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-session = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-system = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-timestamp = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+srml-treasury = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+sr-version = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830', default-features = false }
+
 akro-primitives = { path = "../../primitives", default-features = false }
 
 [features]

@@ -4,13 +4,12 @@ version = "0.3.0"
 authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
-substrate-transaction-pool = { git = "https://github.com/paritytech/substrate" }
-substrate-bft = { git = "https://github.com/paritytech/substrate" }
-substrate-primitives = { git = "https://github.com/paritytech/substrate" }
-srml-support = { git = "https://github.com/paritytech/substrate" }
-substrate-client = { git = "https://github.com/paritytech/substrate" }
-sr-primitives = { git = "https://github.com/paritytech/substrate" }
-substrate-network = { git = "https://github.com/paritytech/substrate" }
+substrate-transaction-pool = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+srml-support = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-client = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+sr-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+substrate-network = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 akro-primitives = {path = "../primitives" }
 akro-runtime = {path = "../runtime" }
 parity-codec = { version = "2.0" }
@@ -25,4 +24,4 @@ tokio = "0.1.7"
 log = "0.3"
 
 [dev-dependencies]
-substrate-keyring = { git = "https://github.com/paritytech/substrate" }
+substrate-keyring = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }

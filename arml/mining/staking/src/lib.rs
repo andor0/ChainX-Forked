@@ -18,10 +18,15 @@ extern crate sr_std as rstd;
 #[macro_use]
 extern crate parity_codec_derive;
 
-extern crate arml_associations as associations;
+//TODO: actualize
+//extern crate arml_associations as associations;
+
 extern crate arml_support;
 extern crate arml_system;
-extern crate arml_tokenbalances as tokenbalances;
+
+//TODO: actualize
+//extern crate arml_tokenbalances as tokenbalances;
+
 extern crate parity_codec as codec;
 extern crate sr_primitives as primitives;
 extern crate srml_balances as balances;
@@ -34,11 +39,13 @@ extern crate sr_io as runtime_io;
 #[cfg(test)]
 extern crate substrate_primitives;
 
-use associations::{ChannelRelationship, RevChannelRelationship};
+//TODO: actualize
+//use associations::{ChannelRelationship, RevChannelRelationship};
+
 use balances::{address::Address, FreeBalance, OnDilution, ReservedBalance, TotalIssuance};
 use codec::Codec;
 use primitives::{
-    traits::{As, OnFinalise, One, Zero},
+    traits::{As, OnFinalize, One, Zero},
     Perbill,
 };
 use rstd::prelude::*;

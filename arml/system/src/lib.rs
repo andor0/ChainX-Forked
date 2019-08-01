@@ -16,10 +16,11 @@ extern crate serde_derive;
 //extern crate parity_codec_derive;
 extern crate parity_codec as codec;
 
+// TODO: actualize
 // for substrate
 // Needed for the set of mock primitives used in our tests.
-#[cfg(feature = "std")]
-extern crate substrate_primitives;
+//#[cfg(feature = "std")]
+//extern crate substrate_primitives;
 
 // for substrate runtime
 // map!, vec! marco.
@@ -38,7 +39,7 @@ extern crate srml_system as system;
 mod tests;
 
 use rstd::prelude::*;
-use runtime_primitives::traits::OnFinalise;
+use runtime_primitives::traits::OnFinalize;
 use runtime_support::dispatch::Result;
 use runtime_support::StorageValue;
 
@@ -48,15 +49,20 @@ pub trait Trait: system::Trait {}
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        fn set_block_producer(origin, producer: T::AccountId) -> Result;
+        fn set_block_producer(origin, producer: T::AccountId) -> Result {
+            ensure_inherent(origin)?;
+            BlockProdocer::<T>::put(producer);
+            Ok(())
+        }
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
-        BlockProdocer::<T>::kill();
-    }
-}
+// TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalize(_: T::BlockNumber) {
+//        BlockProdocer::<T>::kill();
+//    }
+//}
 
 decl_storage! {
     trait Store for Module<T: Trait> as CXSystem {
@@ -66,10 +72,4 @@ decl_storage! {
     }
 }
 
-impl<T: Trait> Module<T> {
-    pub fn set_block_producer(origin: T::Origin, producer: T::AccountId) -> Result {
-        ensure_inherent(origin)?;
-        BlockProdocer::<T>::put(producer);
-        Ok(())
-    }
-}
+impl<T: Trait> Module<T> {}
