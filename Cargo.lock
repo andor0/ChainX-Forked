@@ -296,6 +296,24 @@ version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "arml-associations"
+version = "0.3.0"
+dependencies = [
+ "hex-literal 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "parity-codec 2.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "parity-codec-derive 2.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.98 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.98 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sr-io 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "sr-primitives 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "sr-std 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "srml-balances 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "srml-support 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "srml-system 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "substrate-primitives 2.0.0 (git+https://github.com/paritytech/substrate)",
+]
+
+[[package]]
 name = "arml-example"
 version = "0.3.0"
 dependencies = [
@@ -318,6 +336,7 @@ dependencies = [
 name = "arml-mining-staking"
 version = "0.3.0"
 dependencies = [
+ "arml-associations 0.3.0",
  "arml-support 0.3.0",
  "arml-system 0.3.0",
  "hex-literal 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -343,6 +362,7 @@ dependencies = [
 name = "arml-mining-tokenstaking"
 version = "0.3.0"
 dependencies = [
+ "arml-associations 0.3.0",
  "arml-mining-staking 0.3.0",
  "arml-support 0.3.0",
  "arml-system 0.3.0",
@@ -365,6 +385,7 @@ dependencies = [
 name = "arml-support"
 version = "0.3.0"
 dependencies = [
+ "arml-associations 0.3.0",
  "arml-system 0.3.0",
  "hex-literal 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "parity-codec 3.5.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -4333,6 +4354,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "srml-balances"
+version = "2.0.0"
+source = "git+https://github.com/paritytech/substrate#04ef6fa2532c8cd34f737cdec200672bb8f40378"
+dependencies = [
+ "parity-codec 4.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safe-mix 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.98 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sr-primitives 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "sr-std 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "srml-support 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "srml-system 2.0.0 (git+https://github.com/paritytech/substrate)",
+ "substrate-keyring 2.0.0 (git+https://github.com/paritytech/substrate)",
+]
+
+[[package]]
 name = "srml-consensus"
 version = "1.0.0"
 source = "git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830#2e30b7321df0cc4dba525cfcf18df8438e12b830"
@@ -6783,6 +6819,7 @@ dependencies = [
 "checksum sr-version 1.0.0 (git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830)" = "<none>"
 "checksum sr-version 2.0.0 (git+https://github.com/paritytech/substrate)" = "<none>"
 "checksum srml-balances 1.0.0 (git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830)" = "<none>"
+"checksum srml-balances 2.0.0 (git+https://github.com/paritytech/substrate)" = "<none>"
 "checksum srml-consensus 1.0.0 (git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830)" = "<none>"
 "checksum srml-contract 1.0.0 (git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830)" = "<none>"
 "checksum srml-council 1.0.0 (git+https://github.com/paritytech/substrate?rev=2e30b7321df0cc4dba525cfcf18df8438e12b830)" = "<none>"

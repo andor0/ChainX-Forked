@@ -24,6 +24,7 @@ srml-timestamp = { git = "https://github.com/paritytech/substrate", rev = '2e30b
 
 arml-system = { path = "../../system", default_features = false }
 arml-support = { path = "../../support",  default_features = false }
+arml-associations = { path = "../../associations",  default_features = false }
 
 [features]
 default = ["std"]
@@ -44,6 +45,7 @@ std = [
     "srml-system/std",
     "srml-timestamp/std",
     # arml
+    "arml-associations/std",
     "arml-system/std",
     "arml-support/std",
 ]

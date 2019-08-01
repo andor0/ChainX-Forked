@@ -22,6 +22,7 @@ srml-balances = { git = "https://github.com/paritytech/substrate", rev = '2e30b7
 # akro runtime module
 arml-system = { path = "../../system", default_features = false }
 arml-support = { path = "../../support",  default_features = false }
+arml-associations = { path = "../../associations",  default_features = false }
 arml-mining-staking = { path = "../staking", default_features = false }
 
 [features]
@@ -41,6 +42,7 @@ std=[
     "srml-balances/std",
     # arml
     "arml-system/std",
+    "arml-associations/std",
     "arml-support/std",
     "arml-mining-staking/std",
 ]

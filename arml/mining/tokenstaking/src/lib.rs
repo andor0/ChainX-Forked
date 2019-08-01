@@ -37,21 +37,15 @@ extern crate srml_timestamp as timestamp;
 
 #[cfg(test)]
 extern crate arml_associations as associations;
-extern crate arml_exchange_pendingorders as pendingorders;
-extern crate arml_funds_financialrecords as financialrecords;
 extern crate arml_mining_staking as staking;
 extern crate arml_support;
 #[cfg(test)]
 extern crate arml_system;
 extern crate arml_tokenbalances as tokenbalances;
 
-extern crate arml_bridge_btc as btc;
-
 #[cfg(test)]
 mod tests;
 
-//use codec::{Codec, Decode, Encode};
-//use rstd::marker::PhantomData;
 use rstd::prelude::*;
 //use rstd::result::Result as StdResult;
 use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, OnFinalise, Zero};
