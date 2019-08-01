@@ -24,8 +24,6 @@ srml-timestamp = { git = "https://github.com/paritytech/substrate", default_feat
 
 arml-system = { path = "../../system", default_features = false }
 arml-support = { path = "../../support",  default_features = false }
-arml-associations = { path = "../../associations", default_features = false }
-arml-tokenbalances = { path = "../../tokenbalances", default_features = false }
 
 [features]
 default = ["std"]
@@ -48,6 +46,4 @@ std = [
     # arml
     "arml-system/std",
     "arml-support/std",
-    "arml-associations/std",
-    "arml-tokenbalances/std",
 ]

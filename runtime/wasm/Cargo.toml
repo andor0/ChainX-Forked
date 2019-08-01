@@ -29,24 +29,6 @@ srml-treasury = { git = "https://github.com/paritytech/substrate", default-featu
 sr-version = { git = "https://github.com/paritytech/substrate", default-features = false }
 akro-primitives = { path = "../../primitives", default-features = false }
 
-# akro runtime module
-arml-system = { path = "../../arml/system", default-features = false }
-arml-support = { path = "../../arml/support", default-features = false }
-arml-tokenbalances = { path = "../../arml/tokenbalances", default-features = false }
-arml-multisig = { path = "../../arml/multisig", default-features = false }
-arml-associations = { path = "../../arml/associations", default-features = false }
-# mining
-arml-mining-staking = { path = "../../arml/mining/staking", default-features = false }
-arml-mining-tokenstaking = { path = "../../arml/mining/tokenstaking", default-features = false }
-# bridge
-arml-bridge-btc = { path = "../../arml/bridge/btc", default-features = false }
-# funds
-arml-funds-financialrecords = { path = "../../arml/funds/financialrecords", default-features = false }
-arml-funds-withdrawal = { path = "../../arml/funds/withdrawal", default-features = false }
-# exchange
-arml-exchange-pendingorders = { path = "../../arml/exchange/pendingorders", default-features = false }
-arml-exchange-matchorder = { path = "../../arml/exchange/matchorder", default-features = false }
-
 [features]
 default = []
 std = [
@@ -68,18 +50,6 @@ std = [
     "srml-treasury/std",
     "sr-version/std",
     "akro-primitives/std",
-    "arml-system/std",
-    "arml-support/std",
-    "arml-tokenbalances/std",
-    "arml-multisig/std",
-    "arml-associations/std",
-    "arml-mining-staking/std",
-    "arml-mining-tokenstaking/std",
-    "arml-bridge-btc/std",
-    "arml-funds-financialrecords/std",
-    "arml-funds-withdrawal/std",
-    "arml-exchange-pendingorders/std",
-    "arml-exchange-matchorder/std",
 ]
 
 [profile.release]

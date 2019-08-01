@@ -32,20 +32,9 @@ akro-primitives = { path = "../primitives" }
 # akro runtime module
 arml-system = { path = "../arml/system" }
 arml-support = { path = "../arml/support" }
-arml-tokenbalances = { path = "../arml/tokenbalances" }
-arml-multisig = { path = "../arml/multisig" }
-arml-associations = { path = "../arml/associations" }
 # mining
 arml-mining-staking = { path = "../arml/mining/staking" }
 arml-mining-tokenstaking = { path = "../arml/mining/tokenstaking" }
-# bridge
-arml-bridge-btc = { path = "../arml/bridge/btc" }
-# funds
-arml-funds-financialrecords = { path = "../arml/funds/financialrecords" }
-arml-funds-withdrawal = { path = "../arml/funds/withdrawal" }
-# exchange
-arml-exchange-pendingorders = { path = "../arml/exchange/pendingorders" }
-arml-exchange-matchorder = { path = "../arml/exchange/matchorder" }
 
 [features]
 default = ["std"]
@@ -70,14 +59,6 @@ std = [
     "safe-mix/std",
     "arml-system/std",
     "arml-support/std",
-    "arml-tokenbalances/std",
-    "arml-multisig/std",
-    "arml-associations/std",
     "arml-mining-staking/std",
     "arml-mining-tokenstaking/std",
-    "arml-bridge-btc/std",
-    "arml-funds-financialrecords/std",
-    "arml-funds-withdrawal/std",
-    "arml-exchange-pendingorders/std",
-    "arml-exchange-matchorder/std",
 ]

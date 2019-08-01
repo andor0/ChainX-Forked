@@ -22,12 +22,7 @@ srml-balances = { git = "https://github.com/paritytech/substrate", default_featu
 # akro runtime module
 arml-system = { path = "../../system", default_features = false }
 arml-support = { path = "../../support",  default_features = false }
-arml-associations = { path = "../../associations", default_features = false }
-arml-tokenbalances = { path = "../../tokenbalances", default_features = false }
 arml-mining-staking = { path = "../staking", default_features = false }
-arml-funds-financialrecords = { path = "../../funds/financialrecords", default_features = false }
-arml-exchange-pendingorders = { path = "../../exchange/pendingorders", default_features = false }
-arml-bridge-btc = { path = "../../bridge/btc", default_features = false }
 
 [features]
 default = ["std"]
@@ -47,10 +42,5 @@ std=[
     # arml
     "arml-system/std",
     "arml-support/std",
-    "arml-associations/std",
-    "arml-tokenbalances/std",
     "arml-mining-staking/std",
-    "arml-funds-financialrecords/std",
-    "arml-exchange-pendingorders/std",
-    "arml-bridge-btc/std",
 ]
