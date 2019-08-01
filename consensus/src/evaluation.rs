@@ -1,8 +1,8 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
-//! ChainX block evaluation and evaluation errors.
-use chainx_primitives::{Block, BlockNumber, Hash, Timestamp};
-use chainx_runtime::{Block as ChainXGenericBlock, CheckedBlock};
+//! Akro block evaluation and evaluation errors.
+use akro_primitives::{Block, BlockNumber, Hash, Timestamp};
+use akro_runtime::{Block as AkroGenericBlock, CheckedBlock};
 
 use super::MAX_TRANSACTIONS_SIZE;
 
@@ -10,13 +10,13 @@ use codec::{Decode, Encode};
 
 error_chain! {
     links {
-        ChainXApi(::chainx_api::Error, ::chainx_api::ErrorKind);
+        AkroApi(::akro_api::Error, ::akro_api::ErrorKind);
     }
 
     errors {
-        ProposalNotForChainX {
-            description("Proposal provided not a ChainX block."),
-            display("Proposal provided not a ChainX block."),
+        ProposalNotForAkro {
+            description("Proposal provided not a Akro block."),
+            display("Proposal provided not a Akro block."),
         }
         TimestampInFuture {
             description("Proposal had timestamp too far in the future."),
@@ -44,7 +44,7 @@ error_chain! {
     }
 }
 
-/// Attempt to evaluate a substrate block as a chainx block, returning error
+/// Attempt to evaluate a substrate block as a akro block, returning error
 /// upon any initial validity checks failing.
 pub fn evaluate_initial(
     proposal: &Block,
@@ -55,9 +55,9 @@ pub fn evaluate_initial(
     const MAX_TIMESTAMP_DRIFT: Timestamp = 60;
 
     let encoded = Encode::encode(proposal);
-    let proposal = ChainXGenericBlock::decode(&mut &encoded[..])
+    let proposal = AkroGenericBlock::decode(&mut &encoded[..])
         .and_then(|b| CheckedBlock::new(b).ok())
-        .ok_or_else(|| ErrorKind::ProposalNotForChainX)?;
+        .ok_or_else(|| ErrorKind::ProposalNotForAkro)?;
 
     let transactions_size = proposal
         .extrinsics

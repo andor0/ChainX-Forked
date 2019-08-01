@@ -2,9 +2,9 @@
 **/*.rs.bk
 *.swp
 .wasm-binaries
-chainx/runtime/wasm/target/
-!runtime/wasm/target/wasm32-unknown-unknown/release/chainx_runtime.compact.wasm
-!runtime/wasm/target/wasm32-unknown-unknown/release/chainx_runtime.wasm
+akro/runtime/wasm/target/
+!runtime/wasm/target/wasm32-unknown-unknown/release/akro_runtime.compact.wasm
+!runtime/wasm/target/wasm32-unknown-unknown/release/akro_runtime.wasm
 **/._*
 .vscode/
 .DS_Store
@@ -17,6 +17,6 @@ chainx/runtime/wasm/target/
 **/*.rs.bk
 .vs/
 .idea/
-chainx/
+akro/
 bak/
-.chainx/
+.akro/

@@ -10,7 +10,7 @@ rust:
 
 env:
   global:
-    - CRATE_NAME=chainx
+    - CRATE_NAME=akro
 
 # Ignore the various targets for now
 # matrix:

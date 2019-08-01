@@ -1,9 +1,9 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
-extern crate chainx_api;
-extern crate chainx_executor;
-extern crate chainx_primitives;
-extern crate chainx_runtime;
+extern crate akro_api;
+extern crate akro_executor;
+extern crate akro_primitives;
+extern crate akro_runtime;
 extern crate parity_codec as codec;
 extern crate sr_primitives as runtime_primitives;
 extern crate substrate_client;

@@ -1,4 +1,4 @@
-// Copyright 2018 chainpool
+// Copyright 2018 Akropolis
 
 use super::*;
 
@@ -12,7 +12,7 @@ impl BlockBuilder for TClientBlockBuilder {
     }
 }
 
-impl ChainXApi for TClient {
+impl AkroApi for TClient {
     type BlockBuilder = TClientBlockBuilder;
 
     fn session_keys(&self, at: &BlockId) -> Result<Vec<SessionKey>> {

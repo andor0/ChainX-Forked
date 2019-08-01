@@ -1,7 +1,7 @@
 [package]
-name = "chainx-rpc"
+name = "akro-rpc"
 version = "0.3.0"
-authors = ["Chainpool <http://www.chainx.org>"]
+authors = ["Akropolis <https://www.akropolis.io>"]
 
 [dependencies]
 substrate-rpc = { git = "https://github.com/paritytech/substrate" }
@@ -14,7 +14,7 @@ sr-primitives = { git = "https://github.com/paritytech/substrate" }
 substrate-primitives = { git = "https://github.com/paritytech/substrate" }
 substrate-rpc-servers = { git = "https://github.com/paritytech/substrate" }
 substrate-client = { git = "https://github.com/paritytech/substrate" }
-chainx-api = { path = "../api" }
+akro-api = { path = "../api" }
 log = "0.3"
 serde = "1.0"
 tokio = "0.1.7"

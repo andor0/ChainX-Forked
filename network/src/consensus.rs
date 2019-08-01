@@ -1,7 +1,7 @@
-// Copyright 2018 chainpool.
+// Copyright 2018 Akropolis.
 
 //! The "consensus" networking code built on top of the base network service.
-//! This fulfills the `chainx_consensus::Network` trait, providing a hook to be called
+//! This fulfills the `akro_consensus::Network` trait, providing a hook to be called
 //! each time consensus begins on a new chain head.
 
 use bft;
@@ -10,9 +10,9 @@ use substrate_network::consensus_gossip::ConsensusMessage;
 use substrate_network::{self as net, generic_message as msg};
 use substrate_primitives::ed25519;
 
-use chainx_api::ChainXApi;
-use chainx_consensus::Network;
-use chainx_primitives::{Block, Hash, SessionKey};
+use akro_api::AkroApi;
+use akro_consensus::Network;
+use akro_primitives::{Block, Hash, SessionKey};
 
 use futures::prelude::*;
 use futures::sync::mpsc;
@@ -232,7 +232,7 @@ pub struct InputAdapter {
 
 impl Stream for InputAdapter {
     type Item = bft::Communication<Block>;
-    type Error = ::chainx_consensus::Error;
+    type Error = ::akro_consensus::Error;
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         match self.input.poll() {
@@ -265,12 +265,12 @@ impl<P> Clone for ConsensusNetwork<P> {
 }
 
 /// A long-lived network which can create BFT message routing processes on demand.
-impl<P: ChainXApi + Send + Sync + 'static> Network for ConsensusNetwork<P> {
+impl<P: AkroApi + Send + Sync + 'static> Network for ConsensusNetwork<P> {
     /// The input stream of BFT messages. Should never logically conclude.
     type Input = InputAdapter;
     /// The output sink of BFT messages. Messages sent here should eventually pass to all
     /// current validators.
-    type Output = BftSink<::chainx_consensus::Error>;
+    type Output = BftSink<::akro_consensus::Error>;
 
     /// Get input and output streams of BFT messages.
     fn communication_for(

@@ -1,6 +1,6 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
-//! The ChainX runtime. This can be compiled with ``#[no_std]`, ready for Wasm.
+//! The Akro runtime. This can be compiled with ``#[no_std]`, ready for Wasm.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 // `construct_runtime!` does a lot of recursion and requires us to increase the limit to 256.
@@ -35,27 +35,10 @@ extern crate srml_system as system;
 extern crate srml_timestamp as timestamp;
 extern crate srml_treasury as treasury;
 extern crate substrate_primitives;
-// cx runtime module
-extern crate cxrml_associations as associations;
-extern crate cxrml_multisig as multisig;
-extern crate cxrml_support as cxsupport;
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
-// chainx mining staking
-extern crate cxrml_mining_staking as staking;
-extern crate cxrml_mining_tokenstaking as tokenstaking;
-// chainx runtime bridge
-extern crate cxrml_bridge_btc as bridge_btc;
-// funds
-extern crate cxrml_funds_financialrecords as financialrecords;
-extern crate cxrml_funds_withdrawal as withdrawal;
-// exchange
-extern crate cxrml_exchange_matchorder as matchorder;
-extern crate cxrml_exchange_pendingorders as pendingorders;
 
 #[macro_use]
 extern crate sr_version as version;
-extern crate chainx_primitives;
+extern crate akro_primitives;
 
 #[cfg(feature = "std")]
 mod checked_block;
@@ -66,13 +49,13 @@ pub use checked_block::CheckedBlock;
 pub use runtime_primitives::{Perbill, Permill};
 pub use tokenbalances::Token;
 
-use chainx_primitives::InherentData;
-use chainx_primitives::{
+use akro_primitives::InherentData;
+use akro_primitives::{
     AccountId, AccountIndex, Balance, BlockNumber, Hash, Index, SessionKey, Signature,
 };
 pub use consensus::Call as ConsensusCall;
 use council::{motions as council_motions, voting as council_voting};
-use cxsystem::Call as CXSystemCall;
+// use arml_system::Call as CXSystemCall;
 use rstd::prelude::*;
 use runtime_primitives::generic;
 use runtime_primitives::traits::{BlakeTwo256, Convert, DigestItem};
@@ -89,16 +72,15 @@ pub use timestamp::BlockPeriod;
 #[cfg(feature = "std")]
 pub use bridge_btc::Params;
 #[cfg(feature = "std")]
-pub use multisig::BalancesConfigCopy;
 
 pub fn inherent_extrinsics(data: InherentData) -> Vec<UncheckedExtrinsic> {
     let mut inherent = vec![generic::UncheckedMortalExtrinsic::new_unsigned(
         Call::Timestamp(TimestampCall::set(data.timestamp)),
     )];
 
-    inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
-        Call::CXSystem(CXSystemCall::set_block_producer(data.block_producer)),
-    ));
+    // inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
+    //     Call::CXSystem(CXSystemCall::set_block_producer(data.block_producer)),
+    // ));
 
     if !data.offline_indices.is_empty() {
         inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
@@ -124,8 +106,8 @@ pub const BLOCK_PRODUCER_POSITION: u32 = 1;
 
 /// Runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: ver_str!("chainx"),
-    impl_name: ver_str!("chainpool-chainx"),
+    spec_name: ver_str!("akro"),
+    impl_name: ver_str!("Akropolis-akro"),
     authoring_version: 1,
     spec_version: 1,
     impl_version: 0,
@@ -222,23 +204,12 @@ impl council::motions::Trait for Runtime {
     type Event = Event;
 }
 
-// cxrml trait
-
-impl cxsystem::Trait for Runtime {}
-
-impl cxsupport::Trait for Runtime {}
-
 impl tokenbalances::Trait for Runtime {
-    const CHAINX_SYMBOL: tokenbalances::SymbolString = b"PCX";
-    const CHAINX_TOKEN_DESC: tokenbalances::DescString = b"Polkadot ChainX";
+    const AKRO_SYMBOL: tokenbalances::SymbolString = b"PCX";
+    const AKRO_TOKEN_DESC: tokenbalances::DescString = b"Polkadot Akro";
     type TokenBalance = TokenBalance;
     type Event = Event;
     type OnMoveToken = ();
-}
-
-impl multisig::Trait for Runtime {
-    type MultiSig = multisig::SimpleMultiSigIdFor<Runtime>;
-    type Event = Event;
 }
 
 impl associations::Trait for Runtime {
@@ -258,29 +229,11 @@ impl tokenstaking::Trait for Runtime {
     type Event = Event;
 }
 
-// bridge
-impl bridge_btc::Trait for Runtime {
-    type Event = Event;
-}
-
 // funds
 impl financialrecords::Trait for Runtime {
     type Event = Event;
     type OnDepositToken = ();
     type OnWithdrawToken = ();
-}
-
-impl withdrawal::Trait for Runtime {}
-
-// exchange
-impl pendingorders::Trait for Runtime {
-    type Amount = TokenBalance;
-    type Price = TokenBalance;
-    type Event = Event;
-}
-
-impl matchorder::Trait for Runtime {
-    type Event = Event;
 }
 
 impl DigestItem for Log {
@@ -315,25 +268,13 @@ construct_runtime!(
         CouncilMotions: council_motions::{Module, Call, Storage, Event<T>, Origin},
         Treasury: treasury,
         Contract: contract::{Module, Call, Config, Event<T>},
-        // chainx runtime module
+        // akro runtime module
         TokenBalances: tokenbalances,
-        MultiSig: multisig,
-        Associations: associations,
         // funds
         FinancialRecords: financialrecords::{Module, Call, Storage, Event<T>},
-        Withdrawal: withdrawal::{Module, Call, Config},
-        // exchange
-        PendingOrders : pendingorders,
-        MatchOrder : matchorder,
-        // bridge
-        BridgeOfBTC: bridge_btc,
         // mining staking
         TokenStaking: tokenstaking,
 
-        // put end of this marco
-        CXSupport: cxsupport::{Module},
-        // must put end of all chainx runtime module
-        CXSystem: cxsystem::{Module, Call, Storage, Config},
         Balances: balances::{Module, Storage, Config, Event<T>},  // no call for public
     }
 );

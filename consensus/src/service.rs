@@ -1,4 +1,4 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 //! Consensus service.
 use std::sync::Arc;
@@ -22,8 +22,8 @@ use tokio::runtime::current_thread::Runtime as LocalRuntime;
 use tokio::runtime::TaskExecutor as ThreadPoolHandle;
 use tokio::timer::Interval;
 
-use chainx_api::ChainXApi;
-use chainx_primitives::{Block, Header};
+use akro_api::AkroApi;
+use akro_primitives::{Block, Header};
 use TransactionPool;
 
 const TIMER_DELAY_MS: Duration = Duration::from_millis(3000);
@@ -69,7 +69,7 @@ impl Service {
         block_delay: u64,
     ) -> Service
     where
-        A: ChainXApi + Send + Sync + 'static,
+        A: AkroApi + Send + Sync + 'static,
         C: BlockchainEvents<Block> + ChainHead<Block> + BlockBody<Block>,
         C: bft::BlockImport<Block> + bft::Authorities<Block> + Send + Sync + 'static,
         N: Network + Send + 'static,

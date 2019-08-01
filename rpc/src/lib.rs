@@ -1,10 +1,10 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
 extern crate substrate_rpc as rpc;
 #[macro_use]
 extern crate log;
 
-extern crate chainx_api;
+extern crate akro_api;
 extern crate jsonrpc_core;
 extern crate jsonrpc_http_server as http;
 extern crate jsonrpc_pubsub as pubsub;
@@ -29,7 +29,7 @@ pub mod servers;
 use std::io;
 use std::net::SocketAddr;
 
-const CHAIN_NAME: &'static str = "ChainX POC-3";
+const CHAIN_NAME: &'static str = "Akro POC-3";
 const IMPL_NAME: &'static str = "bud";
 const IMPL_VERSION: &'static str = "v0.3.0";
 

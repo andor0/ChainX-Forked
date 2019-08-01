@@ -1,9 +1,9 @@
-// Copyright 2018 Chainpool.
+// Copyright 2018 Akropolis.
 
-use chainx_api::ChainXApi;
-use chainx_executor;
-use chainx_primitives::{AccountId, Block, BlockId, BlockNumber, Hash, Index};
-use chainx_runtime::{Address, UncheckedExtrinsic};
+use akro_api::AkroApi;
+use akro_executor;
+use akro_primitives::{AccountId, Block, BlockId, BlockNumber, Hash, Index};
+use akro_runtime::{Address, UncheckedExtrinsic};
 use codec::{Decode, Encode};
 use error::{Error, ErrorKind, Result};
 use extrinsic_pool;
@@ -22,7 +22,7 @@ use substrate_executor::NativeExecutor;
 use substrate_network;
 
 type Executor =
-    substrate_client::LocalCallExecutor<Backend, NativeExecutor<chainx_executor::Executor>>;
+    substrate_client::LocalCallExecutor<Backend, NativeExecutor<akro_executor::Executor>>;
 type Backend = substrate_client_db::Backend<Block>;
 
 const MAX_TRANSACTION_SIZE: usize = 4 * 1024 * 1024;
@@ -73,20 +73,20 @@ impl VerifiedTransaction for VerifiedExtrinsic {
 }
 
 pub struct LocalContext<'a, A: 'a>(&'a Arc<A>);
-impl<'a, A: 'a + ChainXApi> CurrentHeight for LocalContext<'a, A> {
+impl<'a, A: 'a + AkroApi> CurrentHeight for LocalContext<'a, A> {
     type BlockNumber = BlockNumber;
     fn current_height(&self) -> BlockNumber {
         self.0.current_height()
     }
 }
-impl<'a, A: 'a + ChainXApi> BlockNumberToHash for LocalContext<'a, A> {
+impl<'a, A: 'a + AkroApi> BlockNumberToHash for LocalContext<'a, A> {
     type BlockNumber = BlockNumber;
     type Hash = Hash;
     fn block_number_to_hash(&self, n: BlockNumber) -> Option<Hash> {
         self.0.block_number_to_hash(n)
     }
 }
-impl<'a, A: 'a + ChainXApi> Lookup for LocalContext<'a, A> {
+impl<'a, A: 'a + AkroApi> Lookup for LocalContext<'a, A> {
     type Source = Address;
     type Target = AccountId;
     fn lookup(&self, a: Address) -> ::std::result::Result<AccountId, &'static str> {
@@ -103,7 +103,7 @@ pub struct PoolApi<A> {
 
 impl<A> PoolApi<A>
 where
-    A: ChainXApi,
+    A: AkroApi,
 {
     /// Create a new instance.
     pub fn new(api: Arc<A>) -> Self {
@@ -113,7 +113,7 @@ where
 
 impl<A> ChainApi for PoolApi<A>
 where
-    A: ChainXApi + Send + Sync,
+    A: AkroApi + Send + Sync,
 {
     type Block = Block;
     type Hash = Hash;
@@ -226,7 +226,7 @@ where
 
 pub struct TransactionPool<A>
 where
-    A: ChainXApi + Send + Sync,
+    A: AkroApi + Send + Sync,
 {
     inner: Arc<Pool<PoolApi<A>>>,
     client: Arc<Client<Backend, Executor, Block>>,
@@ -234,7 +234,7 @@ where
 
 impl<A> TransactionPool<A>
 where
-    A: ChainXApi + Send + Sync,
+    A: AkroApi + Send + Sync,
 {
     /// Create a new transaction pool.
     pub fn new(
@@ -262,7 +262,7 @@ where
 
 impl<A> substrate_network::TransactionPool<Hash, Block> for TransactionPool<A>
 where
-    A: ChainXApi + Send + Sync,
+    A: AkroApi + Send + Sync,
 {
     fn transactions(&self) -> Vec<(Hash, ExtrinsicFor<PoolApi<A>>)> {
         let best_block_id = match self.best_block_id() {

@@ -1,12 +1,12 @@
-use chainx_api;
-use chainx_primitives::Hash;
-use chainx_runtime::{Address, UncheckedExtrinsic};
+use akro_api;
+use akro_primitives::Hash;
+use akro_runtime::{Address, UncheckedExtrinsic};
 use extrinsic_pool;
 
 error_chain! {
     links {
         Pool(extrinsic_pool::Error, extrinsic_pool::ErrorKind);
-        Api(chainx_api::Error, chainx_api::ErrorKind);
+        Api(akro_api::Error, akro_api::ErrorKind);
     }
     errors {
         /// Unexpected extrinsic format submitted
