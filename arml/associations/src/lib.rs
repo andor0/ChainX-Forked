@@ -38,7 +38,7 @@ extern crate srml_system as system;
 mod tests;
 
 use rstd::prelude::*;
-use runtime_primitives::traits::{CheckedAdd, CheckedSub, OnFinalise, Zero};
+use runtime_primitives::traits::{CheckedAdd, CheckedSub, OnFinalize, Zero};
 use runtime_support::dispatch::Result;
 use runtime_support::{StorageMap, StorageValue};
 
@@ -77,7 +77,7 @@ decl_module! {
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
+impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
     fn on_finalise(_: T::BlockNumber) {
         // do nothing
     }

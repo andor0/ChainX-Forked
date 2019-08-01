@@ -52,7 +52,6 @@ use runtime_support::{Parameter, StorageMap, StorageValue};
 use balances::address::Address;
 use balances::EnsureAccountLiquid;
 use system::ensure_signed;
-// use balances::EnsureAccountLiquid;
 
 pub type SymbolString = &'static [u8];
 
@@ -106,8 +105,7 @@ pub fn is_valid_symbol(v: &[u8]) -> Result {
                 || (*c == 0x2D) // -
                 || (*c == 0x2E) // .
                 || (*c == 0x7C) // |
-                || (*c == 0x7E)
-            // ~
+                || (*c == 0x7E) // ~
             {
                 continue;
             } else {
@@ -211,8 +209,6 @@ impl Default for ReservedType {
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        /// register_token to module, should allow by root
-        fn register_token(token: Token, free: T::TokenBalance, reversed: T::TokenBalance) -> Result;
         /// transfer between account
         fn transfer(origin, dest: Address<T::AccountId, T::AccountIndex>, sym: Symbol, value: T::TokenBalance) -> Result;
         /// set free token for an account
@@ -230,10 +226,6 @@ decl_event!(
         <T as Trait>::TokenBalance,
         <T as balances::Trait>::Balance
     {
-        /// register new token (token.symbol(), token.token_desc, token.precision)
-        RegisterToken(Symbol, TokenDesc, Precision),
-        /// cancel token
-        CancelToken(Symbol),
         /// issue succeeded (who, symbol, balance)
         IssueToken(AccountId, Symbol, TokenBalance),
         /// lock destroy (who, symbol, balance)
@@ -258,25 +250,15 @@ decl_storage! {
         /// akro token precision
         pub AkroPrecision get(akro_precision) config(): Precision;
 
-        /// supported token list
-        pub TokenListMap get(token_list_map): map u32 => Symbol;
-        /// supported token list length
-        pub TokenListLen get(token_list_len): u32;
-        /// token info for every token, key is token symbol
-        pub TokenInfo get(token_info): map Symbol => Option<(Token, bool)>;
+        /// total free token
+        pub TotalFreeToken get(total_free_token): T::TokenBalance;
 
-        /// total free token of a symbol
-        pub TotalFreeToken get(total_free_token): map Symbol => T::TokenBalance;
+        pub FreeToken: map (T::AccountId) => T::TokenBalance;
 
-        pub FreeToken: map (T::AccountId, Symbol) => T::TokenBalance;
+        /// total locked token 
+        pub TotalReservedToken get(total_reserved_token): T::TokenBalance;
 
-        /// total locked token of a symbol
-        pub TotalReservedToken get(total_reserved_token): map Symbol => T::TokenBalance;
-
-        pub ReservedToken: map (T::AccountId, Symbol, ReservedType) => T::TokenBalance;
-
-        /// token list of a account
-        pub TokenListOf get(token_list_of): map T::AccountId => Vec<Symbol> = [T::AKRO_SYMBOL.to_vec()].to_vec();
+        pub ReservedToken: map (T::AccountId, ReservedType) => T::TokenBalance;
 
         /// transfer token fee
         pub TransferTokenFee get(transfer_token_fee) config(): T::Balance;
@@ -334,9 +316,6 @@ impl<T: Trait> Module<T> {
     fn deposit_event(event: Event<T>) {
         <system::Module<T>>::deposit_event(<T as Trait>::Event::from(event).into());
     }
-}
-
-impl<T: Trait> Module<T> {
     // token storage
     pub fn free_token(who_sym: &(T::AccountId, Symbol)) -> T::TokenBalance {
         if who_sym.1.as_slice() == T::AKRO_SYMBOL {
@@ -374,35 +353,6 @@ impl<T: Trait> Module<T> {
 }
 
 impl<T: Trait> Module<T> {
-    // token symol
-    // public call
-    /// register a token into token list ans init
-    pub fn register_token(
-        token: Token,
-        free: T::TokenBalance,
-        reserved: T::TokenBalance,
-    ) -> Result {
-        token.is_valid()?;
-        let sym = token.symbol();
-        Self::add_token(&sym, free, reserved)?;
-        <TokenInfo<T>>::insert(&sym, (token.clone(), true));
-
-        Self::deposit_event(RawEvent::RegisterToken(
-            token.symbol(),
-            token.token_desc(),
-            token.precision(),
-        ));
-        Ok(())
-    }
-    /// cancel a token from token list but not remove it
-    pub fn cancel_token(symbol: &Symbol) -> Result {
-        is_valid_symbol(symbol)?;
-        Self::remove_token(symbol)?;
-
-        Self::deposit_event(RawEvent::CancelToken(symbol.clone()));
-        Ok(())
-    }
-
     pub fn token_list() -> Vec<Symbol> {
         let len: u32 = <TokenListLen<T>>::get();
         let mut v: Vec<Symbol> = Vec::new();
@@ -842,10 +792,6 @@ impl<T: Trait> Module<T> {
             Some(b) => b,
             None => return Err("destination free token too high to receive value"),
         };
-
-        if associations::Module::<T>::is_init(to) == false {
-            balances::Module::<T>::set_free_balance_creating(to, Zero::zero());
-        }
 
         T::OnMoveToken::on_move_token(from, to, sym, value);
 

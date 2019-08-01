@@ -18,9 +18,7 @@ extern crate substrate_primitives;
 extern crate srml_support as runtime_support;
 extern crate srml_system as system;
 
-//TODO: actualize
-//extern crate arml_associations as associations;
-
+extern crate arml_associations as associations;
 extern crate arml_system;
 
 // use balances::EnsureAccountLiquid;
@@ -40,21 +38,19 @@ decl_module! {
     }
 }
 
-//TODO: actualize
-//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
-//    fn on_finalize(_: T::BlockNumber) {
-//        // do nothing
-//    }
-//}
+impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+   fn on_finalize(_: T::BlockNumber) {
+       // do nothing
+   }
+}
 
-//TODO: actualize
-//impl<T: Trait> associations::OnCalcFee<T::AccountId, T::Balance> for Module<T> {
-//    fn on_calc_fee(who: &T::AccountId, total_fee: T::Balance) -> Result {
-//        Self::calc_fee(who, total_fee)
-//    }
-//}
-//
-//pub trait Trait: associations::Trait + arml_system::Trait {}
+impl<T: Trait> associations::OnCalcFee<T::AccountId, T::Balance> for Module<T> {
+   fn on_calc_fee(who: &T::AccountId, total_fee: T::Balance) -> Result {
+       Self::calc_fee(who, total_fee)
+   }
+}
+
+pub trait Trait: associations::Trait + arml_system::Trait {}
 
 impl<T: Trait> Module<T> {
     fn calc_fee_withaccount(
@@ -78,9 +74,8 @@ impl<T: Trait> Module<T> {
                 None => return Err("akro balance too high to exec this option"),
             };
 
-            // TODO: actualize
-            // <balances::Module<T>>::set_free_balance(who, new_from_balance);
-            // <balances::Module<T>>::set_free_balance(&rate[0].1, new_to_balance);
+            <balances::Module<T>>::set_free_balance(who, new_from_balance);
+            <balances::Module<T>>::set_free_balance(&rate[0].1, new_to_balance);
             return Ok(());
         }
 
@@ -104,35 +99,31 @@ impl<T: Trait> Module<T> {
                 Some(b) => b,
                 None => Zero::zero(),
             };
-            //TODO: actualize
-            //<balances::Module<T>>::set_free_balance(accoundid, new_to_balance);
+            <balances::Module<T>>::set_free_balance(accoundid, new_to_balance);
         }
-        //TODO: actualize
-        //<balances::Module<T>>::set_free_balance(who, new_from_balance);
+        <balances::Module<T>>::set_free_balance(who, new_from_balance);
         Ok(())
     }
 
     fn calc_fee(from_who: &T::AccountId, fee: T::Balance) -> Result {
         let mut v = Vec::new();
         // 50% for block producer
-        // TODO: actualize
-        // if let Some(p) = arml_system::Module::<T>::block_producer() {
-        //    v.push((5, p));
-        //} else {
-        //    v.push((5, arml_system::Module::<T>::death_account()));
-        //}
+        if let Some(p) = arml_system::Module::<T>::block_producer() {
+           v.push((5, p));
+        } else {
+           v.push((5, arml_system::Module::<T>::death_account()));
+        }
 
-        // TODO: actualize
         // 50% for relationship accountid
-        //if let Some(to) = associations::Module::<T>::relationship(from_who) {
-        //    v.push((5, to))
-        //} else {
-        //    if let Some(p) = arml_system::Module::<T>::block_producer() {
-        //        v.push((5, p));
-        //    } else {
-        //        v.push((5, arml_system::Module::<T>::death_account()));
-        //    }
-        //}
+        if let Some(to) = associations::Module::<T>::relationship(from_who) {
+           v.push((5, to))
+        } else {
+           if let Some(p) = arml_system::Module::<T>::block_producer() {
+               v.push((5, p));
+           } else {
+               v.push((5, arml_system::Module::<T>::death_account()));
+           }
+        }
 
         Self::calc_fee_withaccount(from_who, fee, v.as_slice())
     }
