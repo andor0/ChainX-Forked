@@ -15,7 +15,6 @@ substrate-keyring = { git = "https://github.com/paritytech/substrate", rev = '2e
 substrate-state-db = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 substrate-state-machine = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 substrate-telemetry = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
-#substrate-bft = { git = "https://github.com/paritytech/substrate", default_features = false }
 substrate-rpc-servers = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 srml-balances = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 

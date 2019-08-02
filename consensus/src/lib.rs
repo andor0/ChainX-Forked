@@ -3,7 +3,6 @@
 extern crate parity_codec as codec;
 extern crate sr_primitives as runtime_primitives;
 extern crate srml_support as runtime_support;
-extern crate substrate_bft as bft;
 extern crate substrate_client as client;
 extern crate substrate_network;
 extern crate substrate_primitives as primitives;
@@ -39,6 +38,7 @@ use futures::prelude::*;
 use parking_lot::RwLock;
 use primitives::{ed25519, AuthorityId};
 use runtime_primitives::generic::Era;
+use runtime_primitives::bft as bft;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::runtime::TaskExecutor;

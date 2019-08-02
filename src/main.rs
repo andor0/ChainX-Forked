@@ -1,6 +1,5 @@
 // Copyright 2018 Akropolis.
 
-extern crate substrate_bft as bft;
 extern crate substrate_client;
 extern crate substrate_client_db as client_db;
 extern crate substrate_keyring as keyring;

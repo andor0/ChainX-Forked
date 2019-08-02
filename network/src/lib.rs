@@ -5,7 +5,6 @@
 //! This manages gossip of consensus messages for BFT, communication between validators
 //! and more.
 
-extern crate substrate_bft as bft;
 extern crate substrate_network;
 extern crate substrate_primitives;
 
@@ -22,6 +21,7 @@ extern crate log;
 
 pub mod consensus;
 
+use sr_primitives::bft as bft;
 use akro_primitives::{Block, Hash, Header};
 use substrate_network::consensus_gossip::ConsensusGossip;
 use substrate_network::specialization::Specialization;
