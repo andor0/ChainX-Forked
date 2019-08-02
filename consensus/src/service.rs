@@ -11,7 +11,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 use super::{Network, ProposerFactory};
-use bft::{self, BftService};
+use runtime_primitives::bft::{self, BftService};
 use client::{BlockBody, BlockchainEvents, ChainHead};
 use ed25519;
 use error;

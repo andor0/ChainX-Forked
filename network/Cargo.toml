@@ -6,6 +6,7 @@ authors = ["Akropolis <https://www.akropolis.io>"]
 [dependencies]
 substrate-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 substrate-network = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+sr-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 akro-primitives = { path = "../primitives" }
 akro-consensus = { path = "../consensus" }
 parity-codec-derive = { version = "2.0" }

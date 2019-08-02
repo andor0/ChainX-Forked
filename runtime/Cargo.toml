@@ -34,6 +34,7 @@ akro-primitives = { path = "../primitives" }
 # akro runtime module
 arml-system = { path = "../arml/system" }
 arml-support = { path = "../arml/support" }
+arml-tokenbalances = { path = "../arml/tokenbalances" }
 # mining
 arml-mining-staking = { path = "../arml/mining/staking" }
 arml-mining-tokenstaking = { path = "../arml/mining/tokenstaking" }
@@ -61,6 +62,7 @@ std = [
     "safe-mix/std",
     "arml-system/std",
     "arml-support/std",
+    "arml-tokenbalances/std",
     "arml-mining-staking/std",
     "arml-mining-tokenstaking/std",
 ]
