@@ -24,6 +24,7 @@ extern crate substrate_primitives as primitives;
 extern crate parity_codec_derive;
 #[cfg_attr(not(feature = "std"), macro_use)]
 extern crate sr_std as rstd;
+extern crate srml_indices as indices;
 extern crate srml_balances as balances;
 extern crate srml_consensus as consensus;
 extern crate srml_contract as contract;
@@ -39,13 +40,27 @@ extern crate substrate_primitives;
 #[macro_use]
 extern crate sr_version as version;
 extern crate akro_primitives;
-
+// akro runtime module
+extern crate arml_associations as associations;
+extern crate arml_support as akro_support;
+extern crate arml_system as akro_system;
 extern crate arml_tokenbalances as tokenbalances;
+// akro mining staking
+extern crate arml_mining_staking as staking;
+extern crate arml_mining_tokenstaking as tokenstaking;
+// akro runtime bridge
+extern crate arml_bridge_btc as bridge_btc;
+// funds
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_funds_withdrawal as withdrawal;
+// exchange
+extern crate arml_exchange_matchorder as matchorder;
+extern crate arml_exchange_pendingorders as pendingorders;
 
 #[cfg(feature = "std")]
 mod checked_block;
 
-pub use balances::address::Address as RawAddress;
+pub use indices::address::Address as RawAddress;
 #[cfg(feature = "std")]
 pub use checked_block::CheckedBlock;
 pub use runtime_primitives::{Perbill, Permill};
@@ -58,6 +73,7 @@ use akro_primitives::{
 pub use consensus::Call as ConsensusCall;
 use council::{motions as council_motions, voting as council_voting};
 use arml_system::Call as AkroSystemCall;
+use system::Call;
 use rstd::prelude::*;
 use runtime_primitives::generic;
 use runtime_primitives::traits::{BlakeTwo256, Convert, DigestItem};
@@ -267,17 +283,27 @@ construct_runtime!(
         CouncilMotions: council_motions::{Module, Call, Storage, Event<T>, Origin},
         Treasury: treasury,
         Contract: contract::{Module, Call, Config, Event<T>},
-        // akro runtime module
+        // chainx runtime module
         TokenBalances: tokenbalances,
+        Associations: associations,
         // funds
         FinancialRecords: financialrecords::{Module, Call, Storage, Event<T>},
+        Withdrawal: withdrawal::{Module, Call, Config},
+        // exchange
+        PendingOrders : pendingorders,
+        MatchOrder : matchorder,
+        // bridge
+        BridgeOfBTC: bridge_btc,
         // mining staking
         TokenStaking: tokenstaking,
 
+        // put end of this marco
+        AkroSupport: akro_support::{Module},
+        // must put end of all chainx runtime module
+        AkroSystem: akro_system::{Module, Call, Storage, Config},
         Balances: balances::{Module, Storage, Config, Event<T>},  // no call for public
     }
 );
-
 /// The address format for describing accounts.
 pub type Address = balances::Address<Runtime>;
 /// Block header type as expected by this runtime.

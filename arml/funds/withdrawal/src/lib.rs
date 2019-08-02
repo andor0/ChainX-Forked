@@ -40,14 +40,14 @@ extern crate srml_timestamp as timestamp;
 
 // chainx runtime module
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_funds_financialrecords as financialrecords;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_support as akro_support;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_system as akro_system;
+extern crate arml_tokenbalances as tokenbalances;
 // chainx runtime module bridge
-extern crate cxrml_bridge_btc as btc;
+extern crate arml_bridge_btc as btc;
 
 #[cfg(test)]
 extern crate base58;
@@ -57,7 +57,7 @@ mod tests;
 
 use rstd::prelude::*;
 //use rstd::result::Result as StdResult;
-use runtime_primitives::traits::OnFinalise;
+use runtime_primitives::traits::OnFinalize;
 use runtime_support::dispatch::Result;
 use runtime_support::StorageValue;
 
@@ -83,8 +83,8 @@ decl_module! {
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
+impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+    fn on_finalize(_: T::BlockNumber) {
         // do nothing
     }
 }
@@ -112,7 +112,7 @@ impl<T: Trait> Module<T> {
         runtime_io::print("[funds withdrawal] withdraw");
         let who = ensure_signed(origin)?;
 
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
+        akro_support::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
 
         let _d = Self::verify_addr(&sym, &addr, &ext)?;
 

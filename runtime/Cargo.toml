@@ -15,6 +15,7 @@ parity-codec-derive = "2.0"
 sr-std = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 sr-io = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 srml-support = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
+srml-indices = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 substrate-primitives = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 srml-consensus = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
 srml-contract = { git = "https://github.com/paritytech/substrate", rev = '2e30b7321df0cc4dba525cfcf18df8438e12b830' }
@@ -35,9 +36,17 @@ akro-primitives = { path = "../primitives" }
 arml-system = { path = "../arml/system" }
 arml-support = { path = "../arml/support" }
 arml-tokenbalances = { path = "../arml/tokenbalances" }
+arml-associations = { path = "../arml/associations" }
 # mining
 arml-mining-staking = { path = "../arml/mining/staking" }
 arml-mining-tokenstaking = { path = "../arml/mining/tokenstaking" }
+# bridge
+arml-bridge-btc = { path = "../arml/bridge/btc" }
+# funds
+arml-funds-financialrecords = { path = "../arml/funds/financialrecords" }
+arml-funds-withdrawal = { path = "../arml/funds/withdrawal" }
+# exchange
+arml-exchange-pendingorders = { path = "../arml/exchange/pendingorders" }
 
 [features]
 default = ["std"]
@@ -63,6 +72,11 @@ std = [
     "arml-system/std",
     "arml-support/std",
     "arml-tokenbalances/std",
+    "arml-associations/std",
     "arml-mining-staking/std",
     "arml-mining-tokenstaking/std",
+    "arml-bridge-btc/std",
+    "arml-funds-financialrecords/std",
+    "arml-funds-withdrawal/std",
+    "arml-exchange-pendingorders/std",
 ]
