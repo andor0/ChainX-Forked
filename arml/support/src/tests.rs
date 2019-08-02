@@ -48,7 +48,7 @@ impl associations::Trait for Test {
 impl Trait for Test {}
 
 type Balances = balances::Module<Test>;
-type CXSystem = arml_system::Module<Test>;
+type AkroSystem = arml_system::Module<Test>;
 type CXSupport = Module<Test>;
 
 pub fn new_test_ext() -> runtime_io::TestExternalities<Blake2Hasher> {
@@ -84,7 +84,7 @@ fn test_no_relation_no_producer() {
     with_externalities(&mut new_test_ext(), || {
         assert_ok!(CXSupport::handle_fee_before(&1, 100, true, || Ok(())));
 
-        assert_eq!(Balances::free_balance(CXSystem::death_account()), 100);
+        assert_eq!(Balances::free_balance(AkroSystem::death_account()), 100);
     })
 }
 
@@ -92,7 +92,7 @@ fn test_no_relation_no_producer() {
 fn test_no_relation_with_producer() {
     with_externalities(&mut new_test_ext(), || {
         let origin = system::RawOrigin::Inherent.into();
-        CXSystem::set_block_producer(origin, 5).unwrap();
+        AkroSystem::set_block_producer(origin, 5).unwrap();
 
         assert_ok!(CXSupport::handle_fee_before(&1, 99, true, || Ok(())));
         assert_eq!(Balances::free_balance(5), 99);
@@ -105,7 +105,7 @@ fn test_with_relation_with_producer() {
         use runtime_support::StorageMap;
 
         let origin = system::RawOrigin::Inherent.into();
-        CXSystem::set_block_producer(origin, 5).unwrap();
+        AkroSystem::set_block_producer(origin, 5).unwrap();
 
         let origin = system::RawOrigin::Signed(1).into();
         assert_ok!(associations::Module::<Test>::init_account(origin, 10, 100));

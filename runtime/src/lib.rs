@@ -58,6 +58,8 @@ extern crate akro_primitives;
 extern crate arml_bridge_btc as bridge_btc;
 extern crate arml_tokenbalances as tokenbalances;
 
+extern crate arml_tokenbalances as tokenbalances;
+
 #[cfg(feature = "std")]
 mod checked_block;
 
@@ -73,7 +75,7 @@ use akro_primitives::{
 };
 pub use consensus::Call as ConsensusCall;
 use council::{motions as council_motions, voting as council_voting};
-// use arml_system::Call as CXSystemCall;
+use arml_system::Call as AkroSystemCall;
 use rstd::prelude::*;
 use primitives::bytes;
 use primitives::{ed25519, sr25519, OpaqueMetadata};
@@ -94,18 +96,15 @@ use version::{ApiId, RuntimeVersion};
 pub use srml_support::StorageValue;
 pub use timestamp::BlockPeriod;
 
-#[cfg(feature = "std")]
-pub use bridge_btc::Params;
-#[cfg(feature = "std")]
 
 pub fn inherent_extrinsics(data: InherentData) -> Vec<UncheckedExtrinsic> {
     let mut inherent = vec![generic::UncheckedMortalExtrinsic::new_unsigned(
         Call::Timestamp(TimestampCall::set(data.timestamp)),
     )];
 
-    // inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
-    //     Call::CXSystem(CXSystemCall::set_block_producer(data.block_producer)),
-    // ));
+    inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
+        Call::AkroSystem(AkroSystemCall::set_block_producer(data.block_producer)),
+    ));
 
     if !data.offline_indices.is_empty() {
         inherent.push(generic::UncheckedMortalExtrinsic::new_unsigned(
