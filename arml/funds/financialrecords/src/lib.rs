@@ -292,7 +292,7 @@ where
     }
 }
 
-pub struct LinkedMultiKey<T: Trait>(runtime_support::storage::generator::PhantomData<T>);
+pub struct LinkedMultiKey<T: Trait>(runtime_support::rstd::marker::PhantomData<T>);
 
 impl<T: Trait> LinkedNodeCollection for LinkedMultiKey<T> {
     type Header = LogHeaderFor<T>;

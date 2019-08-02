@@ -37,11 +37,15 @@ extern crate srml_timestamp as timestamp;
 
 #[cfg(test)]
 extern crate arml_associations as associations;
+extern crate arml_exchange_pendingorders as pendingorders;
+extern crate arml_funds_financialrecords as financialrecords;
 extern crate arml_mining_staking as staking;
 extern crate arml_support;
 #[cfg(test)]
 extern crate arml_system;
 extern crate arml_tokenbalances as tokenbalances;
+
+extern crate arml_bridge_btc as btc;
 
 #[cfg(test)]
 mod tests;
@@ -169,7 +173,8 @@ decl_event!(
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        fn claim(origin, sym: Symbol) -> Result;
+        //TODO: actualize
+        //fn claim(origin, sym: Symbol) -> Result;
     }
 }
 
@@ -371,7 +376,10 @@ fn deposit_reward<T: Trait>(who: &T::AccountId, sym: &Symbol, value: T::TokenBal
     runtime_io::print("deposit reward  --sym--block_count--reward--new_jackpot--new_balance");
     runtime_io::print(sym.as_slice());
 
-    let sec_per_block: T::Moment = timestamp::Module::<T>::block_period();
+    //TODO: actualize
+    //let sec_per_block: T::Moment = timestamp::Module::<T>::block_period();
+    let sec_per_block: T::Moment = <timestamp::Module<T>>::minimum_period();
+
     let block_count: u32 = match sym.as_slice() {
         // btc
         btc::Module::<T>::SYMBOL => {
