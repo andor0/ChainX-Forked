@@ -26,7 +26,6 @@ arml-system = { path = "../../system", default_features = false }
 arml-support = { path = "../../support",  default_features = false }
 arml-associations = { path = "../../associations",  default_features = false }
 arml-tokenbalances = { path = "../../tokenbalances",  default_features = false }
-arml-funds-financialrecords = { path = "../../funds/financialrecords", default_features = false }
 
 [features]
 default = ["std"]
@@ -49,7 +48,6 @@ std = [
     # arml
     "arml-associations/std",
     "arml-tokenbalances/std",
-    "arml-funds-financialrecords/std",
     "arml-system/std",
     "arml-support/std",
 ]
