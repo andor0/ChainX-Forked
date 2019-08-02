@@ -39,7 +39,19 @@ pub fn testnet_genesis(chainspec: ChainSpec) -> GenesisConfig {
     const MINUTES: u64 = 60 / SECS_PER_BLOCK;
     const HOURS: u64 = MINUTES * 60;
     const DAYS: u64 = HOURS * 24;
-
+    
+    let pcx_precision = 3_u16;
+    let normalize = |n: u128| n * 10_u128.pow(pcx_precision as u32);
+    let balances_config = BalancesConfig {
+        transaction_base_fee: 1,
+        transaction_byte_fee: 0,
+        existential_deposit: 0,
+        transfer_fee: 0,
+        creation_fee: 0,
+        reclaim_rebate: 0,
+        balances: vec![],
+    };
+    let balances_config_copy = BalancesConfigCopy::create_from_src(&balances_config).src();
 
     GenesisConfig {
         consensus: Some(ConsensusConfig {

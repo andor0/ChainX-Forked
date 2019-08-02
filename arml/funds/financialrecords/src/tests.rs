@@ -33,27 +33,25 @@ impl system::Trait for Test {
 
 impl balances::Trait for Test {
     type Balance = u64;
-    type AccountIndex = u64;
     type OnFreeBalanceZero = ();
-    type EnsureAccountLiquid = ();
     type Event = ();
 }
 
-impl cxsystem::Trait for Test {}
+impl akro_system::Trait for Test {}
 
 impl associations::Trait for Test {
-    type OnCalcFee = cxsupport::Module<Test>;
+    type OnCalcFee = akro_support::Module<Test>;
     type Event = ();
 }
 
-impl cxsupport::Trait for Test {}
+impl akro_support::Trait for Test {}
 
 // define tokenbalances module type
 pub type TokenBalance = u128;
 
 impl tokenbalances::Trait for Test {
-    const CHAINX_SYMBOL: SymbolString = b"pcx";
-    const CHAINX_TOKEN_DESC: DescString = b"this is pcx for mock";
+    const AKRO_SYMBOL: SymbolString = b"pcx";
+    const AKRO_TOKEN_DESC: DescString = b"this is pcx for mock";
     type TokenBalance = TokenBalance;
     type Event = ();
     type OnMoveToken = ();

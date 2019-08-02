@@ -18,12 +18,10 @@ extern crate sr_std as rstd;
 #[macro_use]
 extern crate parity_codec_derive;
 
+extern crate arml_tokenbalances as tokenbalances;
 extern crate arml_associations as associations;
-
 extern crate arml_support;
 extern crate arml_system;
-
-extern crate arml_tokenbalances as tokenbalances;
 
 extern crate parity_codec as codec;
 extern crate sr_primitives as primitives;

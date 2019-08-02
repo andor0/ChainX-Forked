@@ -422,7 +422,6 @@ name = "arml-mining-staking"
 version = "0.3.0"
 dependencies = [
  "arml-associations 0.3.0",
- "arml-funds-financialrecords 0.3.0",
  "arml-support 0.3.0",
  "arml-system 0.3.0",
  "arml-tokenbalances 0.3.0",

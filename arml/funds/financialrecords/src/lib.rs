@@ -38,9 +38,9 @@ extern crate srml_system as system;
 // for chainx runtime module lib
 #[cfg(test)]
 extern crate arml_associations as associations;
-extern crate arml_support as support;
+extern crate arml_support as akro_support;
 #[cfg(test)]
-extern crate arml_system as system;
+extern crate arml_system as akro_system;
 extern crate arml_tokenbalances as tokenbalances;
 
 #[cfg(test)]
@@ -53,7 +53,7 @@ use runtime_primitives::traits::{OnFinalize, As};
 use runtime_support::dispatch::Result;
 use runtime_support::{StorageMap, StorageValue};
 
-use support::storage::linked_node::{LinkedNodeCollection, MultiNodeIndex, Node, NodeT};
+use akro_support::storage::linked_node::{LinkedNodeCollection, MultiNodeIndex, Node, NodeT};
 pub use tokenbalances::{ReservedType, Symbol};
 
 pub trait OnDepositToken<AccountId, TokenBalance> {
