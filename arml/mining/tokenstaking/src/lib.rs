@@ -48,7 +48,7 @@ mod tests;
 
 use rstd::prelude::*;
 //use rstd::result::Result as StdResult;
-use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, OnFinalise, Zero};
+use runtime_primitives::traits::{As, CheckedAdd, CheckedSub, OnFinalize, Zero};
 use runtime_support::dispatch::Result;
 use runtime_support::{StorageMap, StorageValue};
 
@@ -173,11 +173,12 @@ decl_module! {
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
-        // do nothing
-    }
-}
+//TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalize(_: T::BlockNumber) {
+//        // do nothing
+//    }
+//}
 
 decl_storage! {
     trait Store for Module<T: Trait> as TokenStkaing {

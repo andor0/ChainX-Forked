@@ -152,7 +152,8 @@ impl<T: Trait> Module<T> {
             (source_vote_weight * jackpot.as_() as u128 / target_vote_weight) as u64,
         );
 
-        <balances::Module<T>>::reward(who, dividend)?;
+        //TODO: actualize
+        //<balances::Module<T>>::reward(who, dividend)?;
 
         target.set_jackpot(jackpot - dividend);
 

@@ -31,26 +31,25 @@ pub mod storage;
 #[cfg(test)]
 mod tests;
 
-pub trait Trait: system::Trait + balances::Trait {}
+pub trait Trait: associations::Trait + arml_system::Trait {}
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
     }
 }
 
-impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
-   fn on_finalize(_: T::BlockNumber) {
-       // do nothing
-   }
-}
+//TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//   fn on_finalize(_: T::BlockNumber) {
+//       // do nothing
+//   }
+//}
 
 impl<T: Trait> associations::OnCalcFee<T::AccountId, T::Balance> for Module<T> {
    fn on_calc_fee(who: &T::AccountId, total_fee: T::Balance) -> Result {
        Self::calc_fee(who, total_fee)
    }
 }
-
-pub trait Trait: associations::Trait + arml_system::Trait {}
 
 impl<T: Trait> Module<T> {
     fn calc_fee_withaccount(
@@ -74,8 +73,10 @@ impl<T: Trait> Module<T> {
                 None => return Err("akro balance too high to exec this option"),
             };
 
-            <balances::Module<T>>::set_free_balance(who, new_from_balance);
-            <balances::Module<T>>::set_free_balance(&rate[0].1, new_to_balance);
+            //TODO: actualize
+            //<balances::Module<T>>::set_free_balance(who, new_from_balance);
+            //<balances::Module<T>>::set_free_balance(&rate[0].1, new_to_balance);
+
             return Ok(());
         }
 
@@ -99,9 +100,11 @@ impl<T: Trait> Module<T> {
                 Some(b) => b,
                 None => Zero::zero(),
             };
-            <balances::Module<T>>::set_free_balance(accoundid, new_to_balance);
+            //TODO: actualize
+            //<balances::Module<T>>::set_free_balance(accoundid, new_to_balance);
         }
-        <balances::Module<T>>::set_free_balance(who, new_from_balance);
+        //TODO: actualize
+        //<balances::Module<T>>::set_free_balance(who, new_from_balance);
         Ok(())
     }
 

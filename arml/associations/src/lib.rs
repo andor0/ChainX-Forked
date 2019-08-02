@@ -72,16 +72,61 @@ decl_event!(
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        fn init_account(origin, who: T::AccountId) -> Result;
-        fn init_exchange_relationship(origin, who: T::AccountId) -> Result;
+        fn init_account(origin, who: T::AccountId) -> Result {
+            runtime_io::print("[associations] init_account");
+            let from = ensure_signed(origin)?;
+            // deduct fee first
+            T::OnCalcFee::on_calc_fee(&from, Self::init_fee())?;
+
+            Self::check_no_init(&who)?;
+
+            Relationship::<T>::insert(&who, from.clone());
+
+            let from_balance = balances::Module::<T>::free_balance(&from);
+            let to_balance = balances::Module::<T>::free_balance(&who);
+            let value: T::Balance = Zero::zero();
+            let new_from_balance = match from_balance.checked_sub(&value) {
+                Some(b) => b,
+                None => return Err("balance too low to send value"),
+            };
+            let new_to_balance = match to_balance.checked_add(&value) {
+                Some(b) => b,
+                None => return Err("destination balance too high to receive value"),
+            };
+
+            //TODO: actualize
+            //balances::Module::<T>::set_free_balance(&from, new_from_balance);
+            //balances::Module::<T>::set_free_balance_creating(&who, new_to_balance);
+
+            Self::deposit_event(RawEvent::InitAccount(from, who, value));
+            Ok(())
+        }
+
+        fn init_exchange_relationship(origin, who: T::AccountId) -> Result {
+            runtime_io::print("[associations] init_exchange_relationship");
+            let from = ensure_signed(origin)?;
+            // deduct fee first
+            T::OnCalcFee::on_calc_fee(&from, Self::init_fee())?;
+
+            if Self::exchange_relationship(&who).is_some() {
+                return Err("has register this account");
+            }
+
+            ExchangeRelationship::<T>::insert(&who, from.clone());
+
+            Self::deposit_event(RawEvent::InitExchangeAccount(from, who));
+            Ok(())
+        }
+
     }
 }
 
-impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
-        // do nothing
-    }
-}
+//TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalise(_: T::BlockNumber) {
+//        // do nothing
+//    }
+//}
 
 decl_storage! {
     trait Store for Module<T: Trait> as Associations {
@@ -122,50 +167,6 @@ impl<T: Trait> Module<T> {
 }
 
 impl<T: Trait> Module<T> {
-    pub fn init_account(origin: T::Origin, who: T::AccountId) -> Result {
-        runtime_io::print("[associations] init_account");
-        let from = ensure_signed(origin)?;
-        // deduct fee first
-        T::OnCalcFee::on_calc_fee(&from, Self::init_fee())?;
-
-        Self::check_no_init(&who)?;
-
-        Relationship::<T>::insert(&who, from.clone());
-
-        let from_balance = balances::Module::<T>::free_balance(&from);
-        let to_balance = balances::Module::<T>::free_balance(&who);
-        let value: T::Balance = Zero::zero();
-        let new_from_balance = match from_balance.checked_sub(&value) {
-            Some(b) => b,
-            None => return Err("balance too low to send value"),
-        };
-        let new_to_balance = match to_balance.checked_add(&value) {
-            Some(b) => b,
-            None => return Err("destination balance too high to receive value"),
-        };
-
-        balances::Module::<T>::set_free_balance(&from, new_from_balance);
-        balances::Module::<T>::set_free_balance_creating(&who, new_to_balance);
-
-        Self::deposit_event(RawEvent::InitAccount(from, who, value));
-        Ok(())
-    }
-
-    pub fn init_exchange_relationship(origin: T::Origin, who: T::AccountId) -> Result {
-        runtime_io::print("[associations] init_exchange_relationship");
-        let from = ensure_signed(origin)?;
-        // deduct fee first
-        T::OnCalcFee::on_calc_fee(&from, Self::init_fee())?;
-
-        if Self::exchange_relationship(&who).is_some() {
-            return Err("has register this account");
-        }
-
-        ExchangeRelationship::<T>::insert(&who, from.clone());
-
-        Self::deposit_event(RawEvent::InitExchangeAccount(from, who));
-        Ok(())
-    }
     pub fn init_channel_relationship(channel: Vec<u8>, who: &T::AccountId) -> Result {
         if Self::channel_relationship(&channel).is_some() {
             return Err("has register this channel");

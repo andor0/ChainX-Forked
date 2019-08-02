@@ -34,6 +34,7 @@ akro-network = { path = "./network" }
 akro-pool = { path = "./pool" }
 akro-rpc = { path = "./rpc" }
 akro-api = { path = "./api" }
+arml-tokenbalances = { path = "./arml/tokenbalances" }
 
 env_logger = "0.5.13"
 rhododendron = "0.3"
@@ -66,6 +67,8 @@ members = [
     "api",
     "arml/system",
     "arml/support",
+    "arml/tokenbalances",
+    "arml/associations",
     "arml/mining/staking",
     "arml/mining/tokenstaking",
     "arml/example",

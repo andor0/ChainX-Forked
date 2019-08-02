@@ -41,17 +41,19 @@ mod mock;
 mod tests;
 
 use codec::Codec;
-use primitives::traits::{As, CheckedAdd, CheckedSub, Member, OnFinalise, SimpleArithmetic, Zero};
+use primitives::traits::{As, CheckedAdd, CheckedSub, Member, OnFinalize, SimpleArithmetic, StaticLookup, Zero};
 use rstd::prelude::*;
 pub use rstd::result::Result as StdResult;
 use rstd::slice::Iter;
-use runtime_support::dispatch::Result;
-use runtime_support::{Parameter, StorageMap, StorageValue};
+use runtime_support::{Parameter, StorageMap, StorageValue, traits::ReservableCurrency, dispatch::Result};
 
 // substrate mod
-use balances::address::Address;
-use balances::EnsureAccountLiquid;
+//use balances::address::Address;
+//use balances::EnsureAccountLiquid;
 use system::ensure_signed;
+
+// test only
+use runtime_io::{StorageOverlay, ChildrenStorageOverlay};
 
 pub type SymbolString = &'static [u8];
 
@@ -209,14 +211,43 @@ impl Default for ReservedType {
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        /// transfer between account
-        fn transfer(origin, dest: Address<T::AccountId, T::AccountIndex>, sym: Symbol, value: T::TokenBalance) -> Result;
-        /// set free token for an account
-        fn set_free_token(who: Address<T::AccountId, T::AccountIndex>, sym: Symbol, free: T::TokenBalance) -> Result;
-        /// set reserved token for an account
-        fn set_reserved_token(who: Address<T::AccountId, T::AccountIndex>, sym: Symbol, reserved: T::TokenBalance, res_type: ReservedType) -> Result;
-        // set transfer token fee
-        fn set_transfer_token_fee(val: T::Balance) -> Result;
+        /// transfer token between accountid, notice the fee is akro
+        fn transfer(
+            origin,
+            dest: <T::Lookup as StaticLookup>::Source,
+            sym: Symbol,
+            value: T::TokenBalance
+        ) -> Result {
+            runtime_io::print("[tokenbalances] transfer");
+            let transactor = ensure_signed(origin)?;
+            let dest = <T::Lookup as StaticLookup>::lookup(dest)?;
+
+            // sub fee first
+            arml_support::Module::<T>::handle_fee_before(
+                &transactor,
+                Self::transfer_token_fee(),
+                true,
+                || Ok(()),
+            )?;
+
+            if transactor == dest {
+                return Err("transactor and dest account are same");
+            }
+
+            //TODO: actualize
+            //T::EnsureAccountLiquid::ensure_account_liquid(&transactor)?;
+
+            // akro transfer
+            if sym.as_slice() == T::AKRO_SYMBOL {
+                runtime_io::print("transfer pcx");
+                let value: T::Balance = As::sa(value.as_() as u64); // change to balance for balances module
+                Self::transfer_akro(&transactor, &dest, value)
+            } else {
+                runtime_io::print("transfer token ---sym");
+                runtime_io::print(sym.as_slice());
+                Self::transfer_token(&transactor, &dest, &sym, value)
+            }
+        }
     }
 }
 
@@ -226,6 +257,10 @@ decl_event!(
         <T as Trait>::TokenBalance,
         <T as balances::Trait>::Balance
     {
+        /// register new token (token.symbol(), token.token_desc, token.precision)
+        RegisterToken(Symbol, TokenDesc, Precision),
+        /// cancel token
+        CancelToken(Symbol),
         /// issue succeeded (who, symbol, balance)
         IssueToken(AccountId, Symbol, TokenBalance),
         /// lock destroy (who, symbol, balance)
@@ -250,66 +285,81 @@ decl_storage! {
         /// akro token precision
         pub AkroPrecision get(akro_precision) config(): Precision;
 
-        /// total free token
-        pub TotalFreeToken get(total_free_token): T::TokenBalance;
+        /// supported token list
+        pub TokenListMap get(token_list_map): map u32 => Symbol;
+        /// supported token list length
+        pub TokenListLen get(token_list_len): u32;
+        /// token info for every token, key is token symbol
+        pub TokenInfo get(token_info): map Symbol => Option<(Token, bool)>;
 
-        pub FreeToken: map (T::AccountId) => T::TokenBalance;
+        /// total free token of a symbol
+        pub TotalFreeToken get(total_free_token): map Symbol => T::TokenBalance;
 
-        /// total locked token 
-        pub TotalReservedToken get(total_reserved_token): T::TokenBalance;
+        pub FreeToken: map (T::AccountId, Symbol) => T::TokenBalance;
 
-        pub ReservedToken: map (T::AccountId, ReservedType) => T::TokenBalance;
+        /// total locked token of a symbol
+        pub TotalReservedToken get(total_reserved_token): map Symbol => T::TokenBalance;
+
+        pub ReservedToken: map (T::AccountId, Symbol, ReservedType) => T::TokenBalance;
+
+        /// token list of a account
+        pub TokenListOf get(token_list_of): map T::AccountId => Vec<Symbol> = [T::AKRO_SYMBOL.to_vec()].to_vec();
 
         /// transfer token fee
         pub TransferTokenFee get(transfer_token_fee) config(): T::Balance;
     }
     add_extra_genesis {
         config(token_list): Vec<(Token, Vec<(T::AccountId, T::TokenBalance)>)>;
-        build(
-            |storage: &mut primitives::StorageMap, config: &GenesisConfig<T>| {
+
+        //TODO: actualize
+        //build(|storage: &mut StorageMap, config: &GenesisConfig<T>| {
+        build(|storage: &mut StorageOverlay, _: &mut ChildrenStorageOverlay, config: &GenesisConfig<T>| {
                 use runtime_io::with_externalities;
                 use substrate_primitives::Blake2Hasher;
 
+                //TODO: actualize
                 // for token_list
-                let src_r = storage.clone().build_storage().unwrap();
-                let mut tmp_storage: runtime_io::TestExternalities<Blake2Hasher> = src_r.into();
-                with_externalities(&mut tmp_storage, || {
-                    // register akro
-                    let akro: Symbol = T::AKRO_SYMBOL.to_vec();
-                    let t: Token = Token::new(akro.clone(), T::AKRO_TOKEN_DESC.to_vec(), config.akro_precision);
-                    let zero: T::TokenBalance = Default::default();
-                    if let Err(e) = Module::<T>::register_token(t, zero, zero) {
-                        panic!(e);
-                    }
-                    // register other token, and set genesis issue
-                    for (token, info) in config.token_list.iter() {
-                        if let Err(e) = token.is_valid() {
-                            panic!(e);
-                        }
-                        let sym = token.symbol();
-                        if sym == akro { panic!("can't issue akro token!"); }
-                        if let Err(e) = Module::<T>::register_token(token.clone(), zero, zero) {
-                            panic!(e);
-                        }
-                        for (account_id, value) in info.iter() {
-                            if let Err(e) = Module::<T>::issue(account_id, &sym, value.clone()) {
-                                panic!(e);
-                            }
-                        }
-                    }
-                });
-                let map: primitives::StorageMap = tmp_storage.into();
-                storage.extend(map);
+                //let src_r = storage.clone().build_storage().unwrap();
+                //let mut tmp_storage: runtime_io::TestExternalities<Blake2Hasher> = src_r.into();
+                //with_externalities(&mut tmp_storage, || {
+                //    // register akro
+                //    let akro: Symbol = T::AKRO_SYMBOL.to_vec();
+                //    let t: Token = Token::new(akro.clone(), T::AKRO_TOKEN_DESC.to_vec(), config.akro_precision);
+                //    let zero: T::TokenBalance = Default::default();
+                //    if let Err(e) = <Module<T>>::register_token(t, zero, zero) {
+                //        panic!(e);
+                //    }
+                //    // register other token, and set genesis issue
+                //    for (token, info) in config.token_list.iter() {
+                //        if let Err(e) = token.is_valid() {
+                //            panic!(e);
+                //        }
+                //        let sym = token.symbol();
+                //        if sym == akro { panic!("can't issue akro token!"); }
+                //        if let Err(e) = <Module<T>>::register_token(token.clone(), zero, zero) {
+                //            panic!(e);
+                //        }
+                //        for (account_id, value) in info.iter() {
+                //            if let Err(e) = <Module<T>>::issue(account_id, &sym, value.clone()) {
+                //                panic!(e);
+                //            }
+                //        }
+                //    }
+                //});
+                //let map = tmp_storage.into();
+                //storage.extend(map);
+
         });
     }
 }
 
+//TODO: actualize
 // This trait expresses what should happen when the block is finalised.
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
-        // do nothing
-    }
-}
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalize(_: T::BlockNumber) {
+//        // do nothing
+//    }
+//}
 
 impl<T: Trait> Module<T> {
     /// Deposit one of this module's events.
@@ -353,6 +403,35 @@ impl<T: Trait> Module<T> {
 }
 
 impl<T: Trait> Module<T> {
+    // token symol
+    // public call
+    /// register a token into token list ans init
+    pub fn register_token(
+        token: Token,
+        free: T::TokenBalance,
+        reserved: T::TokenBalance,
+    ) -> Result {
+        token.is_valid()?;
+        let sym = token.symbol();
+        Self::add_token(&sym, free, reserved)?;
+        <TokenInfo<T>>::insert(&sym, (token.clone(), true));
+
+        Self::deposit_event(RawEvent::RegisterToken(
+            token.symbol(),
+            token.token_desc(),
+            token.precision(),
+        ));
+        Ok(())
+    }
+    /// cancel a token from token list but not remove it
+    pub fn cancel_token(symbol: &Symbol) -> Result {
+        is_valid_symbol(symbol)?;
+        Self::remove_token(symbol)?;
+
+        Self::deposit_event(RawEvent::CancelToken(symbol.clone()));
+        Ok(())
+    }
+
     pub fn token_list() -> Vec<Symbol> {
         let len: u32 = <TokenListLen<T>>::get();
         let mut v: Vec<Symbol> = Vec::new();
@@ -367,7 +446,7 @@ impl<T: Trait> Module<T> {
         Self::token_list()
             .into_iter()
             .filter(|s| {
-                if let Some(t) = TokenInfo::<T>::get(s) {
+                if let Some(t) = <TokenInfo<T>>::get(s) {
                     t.1
                 } else {
                     false
@@ -378,7 +457,7 @@ impl<T: Trait> Module<T> {
 
     pub fn is_valid_token(symbol: &Symbol) -> Result {
         is_valid_symbol(symbol)?;
-        if let Some(info) = TokenInfo::<T>::get(symbol) {
+        if let Some(info) = <TokenInfo<T>>::get(symbol) {
             if info.1 == true {
                 return Ok(());
             }
@@ -539,9 +618,10 @@ impl<T: Trait> Module<T> {
                 None => return Err("akro total reserved token too high to reserve"),
             };
             // would subtract freebalance and add to reversed balance
-            balances::Module::<T>::reserve(who, value)?;
-            ReservedToken::<T>::insert(reserved_key, new_reserved_token);
-            TotalReservedToken::<T>::insert(symbol, new_total_reserved_token);
+            <balances::Module<T> as ReservableCurrency<_>>::reserve(who, value)?;
+
+            <ReservedToken<T>>::insert(reserved_key, new_reserved_token);
+            <TotalReservedToken<T>>::insert(symbol, new_total_reserved_token);
 
             Self::deposit_event(RawEvent::ReverseToken(
                 who.clone(),
@@ -615,10 +695,12 @@ impl<T: Trait> Module<T> {
                 Some(b) => b,
                 None => return Err("akro total reserved token too low to unreserve"),
             };
+
+            //TODO: actualize
             // would subtract reservedbalance and add to free balance
-            balances::Module::<T>::unreserve(who, value);
-            ReservedToken::<T>::insert(reserved_key, new_reserved_token);
-            TotalReservedToken::<T>::insert(symbol, new_total_reserved_token);
+            //balances::Module::<T>::unreserve(who, value);
+            <ReservedToken<T>>::insert(reserved_key, new_reserved_token);
+            <TotalReservedToken<T>>::insert(symbol, new_total_reserved_token);
 
             Self::deposit_event(RawEvent::UnreverseToken(
                 who.clone(),
@@ -761,8 +843,9 @@ impl<T: Trait> Module<T> {
             None => return Err("destination balance too high to receive value"),
         };
 
-        balances::Module::<T>::set_free_balance(&from, new_from_balance);
-        balances::Module::<T>::set_free_balance_creating(&to, new_to_balance);
+        //TODO: actualize
+        //balances::Module::<T>::set_free_balance(&from, new_from_balance);
+        //balances::Module::<T>::set_free_balance_creating(&to, new_to_balance);
 
         Self::deposit_event(RawEvent::TransferAkro(from.clone(), to.clone(), value));
         Ok(())
@@ -808,6 +891,7 @@ impl<T: Trait> Module<T> {
         Ok(())
     }
 
+    /*
     // public call
     /// transfer token between accountid, notice the fee is akro
     pub fn transfer(
@@ -844,87 +928,111 @@ impl<T: Trait> Module<T> {
             Self::transfer_token(&transactor, &dest, &sym, value)
         }
     }
+    */
 
-    pub fn set_free_token(who: balances::Address<T>, sym: Symbol, free: T::TokenBalance) -> Result {
-        let who = balances::Module::<T>::lookup(who)?;
+    pub fn set_free_token(who: T::Balance /*balances::Address<T>*/, sym: Symbol, free: T::TokenBalance) -> Result {
+        //TODO: actualize
+        //let who = balances::Module::<T>::lookup(who)?;
+
         // for akro
         if sym.as_slice() == T::AKRO_SYMBOL {
             let free: T::Balance = As::sa(free.as_() as u64); // change to balance for balances module
-            balances::Module::<T>::set_free_balance(&who, free);
+
+            //TODO: actualize
+            //balances::Module::<T>::set_free_balance(&who, free);
+
             return Ok(());
         }
+        //TODO: actualize
         // other token
-        let key = (who.clone(), sym.clone());
-        let old_free = Self::free_token(&key);
+        //let key = (who.clone(), sym.clone());
+        //let old_free = Self::free_token(&key);
+
         let old_total_free = Self::total_free_token(&sym);
 
-        if old_free == free {
-            return Err("some value for free token");
-        }
+        //TODO: actualize
+        //if old_free == free {
+        //    return Err("some value for free token");
+        //}
 
-        let new_total_free = if free > old_free {
-            match free.checked_sub(&old_free) {
-                None => return Err("free token too low to sub value"),
-                Some(b) => match old_total_free.checked_add(&b) {
-                    None => return Err("old total free token too high to add value"),
-                    Some(new) => new,
-                },
-            }
-        } else {
-            match old_free.checked_sub(&free) {
-                None => return Err("old free token too low to sub value"),
-                Some(b) => match old_total_free.checked_sub(&b) {
-                    None => return Err("old total free token too low to sub value"),
-                    Some(new) => new,
-                },
-            }
-        };
-        TotalFreeToken::<T>::insert(sym, new_total_free);
-        FreeToken::<T>::insert(key, free);
+        //TODO: actualize
+        //let new_total_free = if free > old_free {
+        //    match free.checked_sub(&old_free) {
+        //        None => return Err("free token too low to sub value"),
+        //        Some(b) => match old_total_free.checked_add(&b) {
+        //            None => return Err("old total free token too high to add value"),
+        //            Some(new) => new,
+        //        },
+        //    }
+        //} else {
+        //    match old_free.checked_sub(&free) {
+        //        None => return Err("old free token too low to sub value"),
+        //        Some(b) => match old_total_free.checked_sub(&b) {
+        //            None => return Err("old total free token too low to sub value"),
+        //            Some(new) => new,
+        //        },
+        //    }
+        //};
+        //<TotalFreeToken<T>>::insert(sym, new_total_free);
+
+        //TODO: actualize
+        //<FreeToken<T>>::insert(key, free);
+
         Ok(())
     }
 
     pub fn set_reserved_token(
-        who: Address<T::AccountId, T::AccountIndex>,
+        who: T::Balance, // T::Balance<T::AccountId, T::AccountIndex>, // Address<T::AccountId, T::AccountIndex>,
         sym: Symbol,
         reserved: T::TokenBalance,
         res_type: ReservedType,
     ) -> Result {
-        let who = balances::Module::<T>::lookup(who)?;
+        //TODO: actualize
+        //let who = balances::Module::<T>::lookup(who)?;
         // for akro
         if sym.as_slice() == T::AKRO_SYMBOL {
             let reserved: T::Balance = As::sa(reserved.as_() as u64); // change to balance for balances module
-            balances::Module::<T>::set_reserved_balance(&who, reserved);
+
+            //TODO: actualize
+            //balances::Module::<T>::set_reserved_balance(&who, reserved);
+
             return Ok(());
         }
+        //TODO: actualize
         // other token
-        let key = (who.clone(), sym.clone(), res_type);
-        let old_reserved = Self::reserved_token(&key);
+        //let key = (who.clone(), sym.clone(), res_type);
+        //let old_reserved = Self::reserved_token(&key);
+
         let old_total_reserved = Self::total_reserved_token(&sym);
 
-        if old_reserved == reserved {
-            return Err("some value for reserved token");
-        }
+        //TODO: actualize
+        //if old_reserved == reserved {
+        //    return Err("some value for reserved token");
+        //}
 
-        let new_total_reserved = if reserved > old_reserved {
-            match reserved.checked_sub(&old_reserved) {
-                None => return Err("reserved token too low to sub value"),
-                Some(b) => match old_total_reserved.checked_add(&b) {
-                    None => return Err("old total reserved token too high to add value"),
-                    Some(new) => new,
-                },
-            }
-        } else {
-            match old_reserved.checked_sub(&reserved) {
-                None => return Err("old reserved token too low to sub value"),
-                Some(b) => match old_total_reserved.checked_sub(&b) {
-                    None => return Err("old total reserved token too high to sub value"),
-                    Some(new) => new,
-                },
-            }
-        };
-        TotalReservedToken::<T>::insert(sym, new_total_reserved);
-        ReservedToken::<T>::insert(key, reserved);
+        //TODO: actualize
+        //let new_total_reserved = if reserved > old_reserved {
+        //    match reserved.checked_sub(&old_reserved) {
+        //        None => return Err("reserved token too low to sub value"),
+        //        Some(b) => match old_total_reserved.checked_add(&b) {
+        //            None => return Err("old total reserved token too high to add value"),
+        //            Some(new) => new,
+        //        },
+        //    }
+        //} else {
+        //    match old_reserved.checked_sub(&reserved) {
+        //        None => return Err("old reserved token too low to sub value"),
+        //        Some(b) => match old_total_reserved.checked_sub(&b) {
+        //            None => return Err("old total reserved token too high to sub value"),
+        //            Some(new) => new,
+        //        },
+        //    }
+        //};
+        //<TotalReservedToken<T>>::insert(sym, new_total_reserved);
+
+        //TODO: actualize
+        //<ReservedToken<T>>::insert(key, reserved);
+
         Ok(())
     }
 

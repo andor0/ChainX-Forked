@@ -18,14 +18,12 @@ extern crate sr_std as rstd;
 #[macro_use]
 extern crate parity_codec_derive;
 
-//TODO: actualize
-//extern crate arml_associations as associations;
+extern crate arml_associations as associations;
 
 extern crate arml_support;
 extern crate arml_system;
 
-//TODO: actualize
-//extern crate arml_tokenbalances as tokenbalances;
+extern crate arml_tokenbalances as tokenbalances;
 
 extern crate parity_codec as codec;
 extern crate sr_primitives as primitives;
@@ -39,18 +37,16 @@ extern crate sr_io as runtime_io;
 #[cfg(test)]
 extern crate substrate_primitives;
 
-//TODO: actualize
-//use associations::{ChannelRelationship, RevChannelRelationship};
+use associations::{ChannelRelationship, RevChannelRelationship};
 
-use balances::{address::Address, FreeBalance, OnDilution, ReservedBalance, TotalIssuance};
+use balances::{FreeBalance, ReservedBalance, TotalIssuance};
 use codec::Codec;
 use primitives::{
-    traits::{As, OnFinalize, One, Zero},
+    traits::{As, OnFinalize, One, StaticLookup, Zero},
     Perbill,
 };
 use rstd::prelude::*;
-use runtime_support::dispatch::Result;
-use runtime_support::{StorageMap, StorageValue};
+use runtime_support::{StorageMap, StorageValue, dispatch::Result, traits::{Imbalance, OnDilution, ReservableCurrency}};
 use session::OnSessionChange;
 use system::ensure_signed;
 
@@ -62,6 +58,9 @@ mod mock;
 mod tests;
 
 pub use vote_weight::{Jackpot, VoteWeight};
+
+// test only
+use runtime_io::{StorageOverlay, ChildrenStorageOverlay};
 
 /// Preference of what happens on a slash event.
 #[derive(PartialEq, Eq, Clone, Encode, Decode)]
@@ -188,25 +187,26 @@ impl<AccountId: Default + Codec> Default for Validator<AccountId> {
 }
 
 decl_module! {
-    #[cfg_attr(feature = "std", serde(bound(deserialize = "T::Balance: ::serde::de::DeserializeOwned")))]
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        fn stake(origin, value: T::Balance) -> Result;
-        fn unstake(origin, value: T::Balance) -> Result;
-        fn register(origin, cert_index: u32, intention: T::AccountId, name: Vec<u8>, url: Vec<u8>, share_count: u32) -> Result;
-        fn activate(origin) -> Result;
-        fn deactivate(origin) -> Result;
-        fn claim(origin, target: Address<T::AccountId, T::AccountIndex>) -> Result;
-        fn nominate(origin, target: Address<T::AccountId, T::AccountIndex>, value: T::Balance) -> Result;
-        fn unnominate(origin, target: Address<T::AccountId, T::AccountIndex>, value: T::Balance) -> Result;
-        fn register_preferences(origin, intentions_index: u32, prefs: ValidatorPrefs<T::Balance>) -> Result;
 
-        fn issue(cert_name: Vec<u8>, frozen_duration: u32, cert_owner: T::AccountId) -> Result;
-
-        fn set_sessions_per_era(new: T::BlockNumber) -> Result;
-        fn set_bonding_duration(new: T::BlockNumber) -> Result;
-        fn set_validator_count(new: u32) -> Result;
-        fn force_new_era(apply_rewards: bool) -> Result;
-        fn set_offline_slash_grace(new: u32) -> Result;
+        //TODO: actualize
+        //fn stake(origin, value: T::Balance) -> Result;
+        //fn unstake(origin, value: T::Balance) -> Result;
+        //fn register(origin, cert_index: u32, intention: T::AccountId, name: Vec<u8>, url: Vec<u8>, share_count: u32) -> Result;
+        //fn activate(origin) -> Result;
+        //fn deactivate(origin) -> Result;
+        //fn claim(origin, target: <T::Lookup as StaticLookup>::Source) -> Result;
+        //fn nominate(origin, target: <T::Lookup as StaticLookup>::Source, value: T::Balance) -> Result;
+        //fn unnominate(origin, target: <T::Lookup as StaticLookup>::Source, value: T::Balance) -> Result;
+        //fn register_preferences(origin, intentions_index: u32, prefs: ValidatorPrefs<T::Balance>) -> Result;
+        //
+        //fn issue(cert_name: Vec<u8>, frozen_duration: u32, cert_owner: T::AccountId) -> Result;
+        //
+        //fn set_sessions_per_era(new: T::BlockNumber) -> Result;
+        //fn set_bonding_duration(new: T::BlockNumber) -> Result;
+        //fn set_validator_count(new: u32) -> Result;
+        //fn force_new_era(apply_rewards: bool) -> Result;
+        //fn set_offline_slash_grace(new: u32) -> Result;
     }
 }
 
@@ -313,7 +313,9 @@ decl_storage! {
         config(intention_profiles): Vec<(T::AccountId, Vec<u8>, Vec<u8>)>;
         config(cert_owner): T::AccountId;
 
-        build(|storage: &mut primitives::StorageMap, config: &GenesisConfig<T>| {
+        //TODO: actualize
+        //build(|storage: &mut StorageMap, config: &GenesisConfig<T>| {
+        build(|storage: &mut StorageOverlay, _: &mut ChildrenStorageOverlay, config: &GenesisConfig<T>| {
             use codec::Encode;
             use rstd::collections::btree_map::BTreeMap;
 
@@ -325,7 +327,8 @@ decl_storage! {
             cert.frozen_duration = 1;
             cert.remaining_shares = config.shares_per_cert - config.intention_profiles.len() as u32;
             cert.owner = config.cert_owner.clone();
-            storage.insert(GenesisConfig::<T>::hash(&<CertProfiles<T>>::key_for(0u32)).to_vec(), cert.encode());
+            //TODO: actualize
+            //storage.insert(GenesisConfig::<T>::hash(&<CertProfiles<T>>::key_for(0u32)).to_vec(), cert.encode());
 
             let mut stats: Stats<T::AccountId, T::Balance> = Stats::default();
 
@@ -337,7 +340,8 @@ decl_storage! {
                 let mut nominees = Vec::new();
                 nominees.push(acnt.clone());
                 nprof.nominees = nominees;
-                storage.insert(GenesisConfig::<T>::hash(&<NominatorProfiles<T>>::key_for(acnt)).to_vec(), nprof.encode());
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<NominatorProfiles<T>>::key_for(acnt)).to_vec(), nprof.encode());
 
                 let mut iprof: IntentionProfs<T::Balance, T::BlockNumber> = IntentionProfs::default();
                 iprof.name = name.clone();
@@ -346,13 +350,17 @@ decl_storage! {
                 iprof.activator_index = 0;
                 iprof.total_nomination = T::Balance::sa(config.activation_per_share as u64);
                 stats.total_stake += T::Balance::sa(config.activation_per_share as u64);
-                storage.insert(GenesisConfig::<T>::hash(&<IntentionProfiles<T>>::key_for(acnt)).to_vec(), iprof.encode());
+
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<IntentionProfiles<T>>::key_for(acnt)).to_vec(), iprof.encode());
 
                 let reserved = iprof.total_nomination;
-                storage.insert(GenesisConfig::<T>::hash(&<ReservedBalance<T>>::key_for(acnt)).to_vec(), reserved.encode());
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<ReservedBalance<T>>::key_for(acnt)).to_vec(), reserved.encode());
 
                 let free = T::Balance::sa(100_000_000_000 - config.activation_per_share as u64);
-                storage.insert(GenesisConfig::<T>::hash(&<FreeBalance<T>>::key_for(acnt)).to_vec(), free.encode());
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<FreeBalance<T>>::key_for(acnt)).to_vec(), free.encode());
 
                 total_issuance += iprof.total_nomination;
 
@@ -362,20 +370,25 @@ decl_storage! {
                 record.last_vote_weight = 0;
                 record.last_vote_weight_update = T::BlockNumber::sa(0);
                 nominations.insert(acnt.clone(), record);
-                storage.insert(GenesisConfig::<T>::hash(&<NominationRecords<T>>::key_for(acnt)).to_vec(), CodecBTreeMap(nominations).encode());
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<NominationRecords<T>>::key_for(acnt)).to_vec(), CodecBTreeMap(nominations).encode());
 
                 let channel = name.clone();
                 let intention = acnt.clone();
-                storage.insert(GenesisConfig::<T>::hash(&<ChannelRelationship<T>>::key_for(channel.clone())).to_vec(), intention.clone().encode());
-                storage.insert(GenesisConfig::<T>::hash(&<RevChannelRelationship<T>>::key_for(intention)).to_vec(), channel.encode());
+                //TODO: actualize
+                //storage.insert(GenesisConfig::<T>::hash(&<ChannelRelationship<T>>::key_for(channel.clone())).to_vec(), intention.clone().encode());
+                //storage.insert(GenesisConfig::<T>::hash(&<RevChannelRelationship<T>>::key_for(intention)).to_vec(), channel.encode());
             }
 
-            storage.insert(GenesisConfig::<T>::hash(&<TotalIssuance<T>>::key()).to_vec(), total_issuance.encode());
+            //TODO: actualize
+            //storage.insert(GenesisConfig::<T>::hash(&<TotalIssuance<T>>::key()).to_vec(), total_issuance.encode());
 
-            storage.insert(GenesisConfig::<T>::hash(&<StakingStats<T>>::key()).to_vec(), stats.encode());
+            //TODO: actualize
+            //storage.insert(GenesisConfig::<T>::hash(&<StakingStats<T>>::key()).to_vec(), stats.encode());
 
             let cert_index = index + 1;
-            storage.insert(GenesisConfig::<T>::hash(&<CertOwnerIndex<T>>::key()).to_vec(), cert_index.encode());
+            //TODO: actualize
+            //storage.insert(GenesisConfig::<T>::hash(&<CertOwnerIndex<T>>::key()).to_vec(), cert_index.encode());
 
         });
     }
@@ -451,7 +464,9 @@ impl<T: Trait> Module<T> {
     }
 
     fn day_to_block(n: u32) -> T::BlockNumber {
-        T::BlockNumber::sa((n * 24 * 60 * 60) as u64 / <timestamp::Module<T>>::block_period().as_())
+        //TODO: actualize
+        //T::BlockNumber::sa((n * 24 * 60 * 60) as u64 / <timestamp::Module<T>>::block_period().as_())
+        T::BlockNumber::sa((n * 24 * 60 * 60) as u64 / <timestamp::Module<T>>::minimum_period().as_())
     }
 
     // PUBLIC IMMUTABLES
@@ -542,8 +557,10 @@ impl<T: Trait> Module<T> {
 
         let value = T::Balance::sa((share_count * Self::activation_per_share()) as u64);
         let free_balance = <balances::Module<T>>::free_balance(&intention);
-        <balances::Module<T>>::set_free_balance(&intention, free_balance + value);
-        <balances::Module<T>>::increase_total_stake_by(value);
+
+        //TODO: actualize
+        //<balances::Module<T>>::set_free_balance(&intention, free_balance + value);
+        //<balances::Module<T>>::increase_total_stake_by(value);
 
         let mut iprof = <IntentionProfiles<T>>::get(&intention);
         let mut nprof = <NominatorProfiles<T>>::get(&intention);
@@ -694,14 +711,14 @@ impl<T: Trait> Module<T> {
 
     fn nominate(
         origin: T::Origin,
-        target: Address<T::AccountId, T::AccountIndex>,
+        target: <T::Lookup as StaticLookup>::Source,
         value: T::Balance,
     ) -> Result {
         runtime_io::print("[mining staking] nominate");
         let who = ensure_signed(origin)?;
         arml_support::Module::<T>::handle_fee_before(&who, Self::nominate_fee(), true, || Ok(()))?;
 
-        let target = <balances::Module<T>>::lookup(target)?;
+        let target = <T::Lookup as StaticLookup>::lookup(target)?;
 
         ensure!(value.as_() > 0, "Cannot stake zero.");
 
@@ -720,7 +737,8 @@ impl<T: Trait> Module<T> {
         );
 
         // reserve nominated balance
-        <balances::Module<T>>::reserve(&who, value)?;
+        //<balances::Module<T>>::reserve(&who, value)?;
+        <balances::Module<T> as ReservableCurrency<_>>::reserve(&who, value)?;
 
         let mut iprof = <IntentionProfiles<T>>::get(&target);
         let mut nprof = <NominatorProfiles<T>>::get(&who);
@@ -750,12 +768,12 @@ impl<T: Trait> Module<T> {
     }
 
     /// Claim dividend from intention's jackpot
-    fn claim(origin: T::Origin, target: Address<T::AccountId, T::AccountIndex>) -> Result {
+    fn claim(origin: T::Origin, target: <T::Lookup as StaticLookup>::Source) -> Result {
         runtime_io::print("[mining staking] claim");
         let source = ensure_signed(origin)?;
         arml_support::Module::<T>::handle_fee_before(&source, Self::claim_fee(), true, || Ok(()))?;
 
-        let target = <balances::Module<T>>::lookup(target)?;
+        let target = <T::Lookup as StaticLookup>::lookup(target)?;
 
         let nprof = <NominatorProfiles<T>>::get(&source);
 
@@ -779,7 +797,7 @@ impl<T: Trait> Module<T> {
     /// target_index is the index of nominee list, 4 => [3, 2], unnominate 3, target_index = 0
     fn unnominate(
         origin: T::Origin,
-        target: Address<T::AccountId, T::AccountIndex>,
+        target: <T::Lookup as StaticLookup>::Source,
         value: T::Balance,
     ) -> Result {
         runtime_io::print("[mining staking] unnominate");
@@ -793,7 +811,7 @@ impl<T: Trait> Module<T> {
 
         ensure!(value.as_() > 0, "Cannot unnominate zero.");
 
-        let target = <balances::Module<T>>::lookup(target)?;
+        let target = <T::Lookup as StaticLookup>::lookup(target)?;
 
         let nprof = <NominatorProfiles<T>>::get(&source);
 
@@ -914,7 +932,10 @@ impl<T: Trait> Module<T> {
     /// Add the reward to their balance, and their jackpot, pro-rata.
     fn reward(who: &T::AccountId, reward: T::Balance) {
         let off_the_table = T::Balance::sa(reward.as_() * 1 / 10);
-        let _ = <balances::Module<T>>::reward(who, off_the_table);
+
+        //TODO: actualize
+        //let _ = <balances::Module<T>>::reward(who, off_the_table);
+
         let to_jackpot = reward - off_the_table;
         let mut iprof = <IntentionProfiles<T>>::get(who);
         iprof.jackpot += to_jackpot;
@@ -1170,9 +1191,10 @@ impl<T: Trait> Module<T> {
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_n: T::BlockNumber) {}
-}
+//TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalize(_n: T::BlockNumber) {}
+//}
 
 impl<T: Trait> OnSessionChange<T::Moment> for Module<T> {
     fn on_session_change(elapsed: T::Moment, should_reward: bool) {
@@ -1180,20 +1202,23 @@ impl<T: Trait> OnSessionChange<T::Moment> for Module<T> {
     }
 }
 
-impl<T: Trait> balances::EnsureAccountLiquid<T::AccountId> for Module<T> {
-    fn ensure_account_liquid(who: &T::AccountId) -> Result {
-        if !<balances::Module<T>>::free_balance(who).is_zero() {
-            Ok(())
-        } else {
-            Err("cannot transfer illiquid funds")
-        }
-    }
-}
+//TODO: actualize
+//impl<T: Trait> balances::EnsureAccountLiquid<T::AccountId> for Module<T> {
+//    fn ensure_account_liquid(who: &T::AccountId) -> Result {
+//        if !<balances::Module<T>>::free_balance(who).is_zero() {
+//            Ok(())
+//        } else {
+//            Err("cannot transfer illiquid funds")
+//        }
+//    }
+//}
 
-impl<T: Trait> balances::OnFreeBalanceZero<T::AccountId> for Module<T> {
-    fn on_free_balance_zero(_who: &T::AccountId) {}
-}
+//TODO: actualize
+//impl<T: Trait> balances::OnFreeBalanceZero<T::AccountId> for Module<T> {
+//    fn on_free_balance_zero(_who: &T::AccountId) {}
+//}
 
-impl<T: Trait> consensus::OnOfflineValidator for Module<T> {
-    fn on_offline_validator(_validator_index: usize) {}
-}
+//TODO: actualize
+//impl<T: Trait> consensus::OnOfflineValidator for Module<T> {
+//    fn on_offline_validator(_validator_index: usize) {}
+//}
