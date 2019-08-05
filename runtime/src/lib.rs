@@ -55,15 +55,27 @@ extern crate arml_exchange_pendingorders as pendingorders;
 #[macro_use]
 extern crate sr_version as version;
 extern crate akro_primitives;
+// akro runtime module
+extern crate arml_associations as associations;
+extern crate arml_support as akro_support;
+extern crate arml_system as akro_system;
+extern crate arml_tokenbalances as tokenbalances;
+// akro mining staking
+extern crate arml_mining_staking as staking;
+extern crate arml_mining_tokenstaking as tokenstaking;
+// akro runtime bridge
 extern crate arml_bridge_btc as bridge_btc;
-extern crate arml_tokenbalances as tokenbalances;
-
-extern crate arml_tokenbalances as tokenbalances;
+// funds
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_funds_withdrawal as withdrawal;
+// exchange
+extern crate arml_exchange_matchorder as matchorder;
+extern crate arml_exchange_pendingorders as pendingorders;
 
 #[cfg(feature = "std")]
 mod checked_block;
 
-//pub use balances::address::Address as RawAddress;
+pub use indices::address::Address as RawAddress;
 #[cfg(feature = "std")]
 pub use checked_block::CheckedBlock;
 pub use runtime_primitives::{Perbill, Permill, create_runtime_str};

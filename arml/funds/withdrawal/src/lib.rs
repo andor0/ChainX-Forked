@@ -42,9 +42,9 @@ extern crate srml_timestamp as timestamp;
 #[cfg(test)]
 extern crate arml_associations as associations;
 extern crate arml_funds_financialrecords as financialrecords;
-extern crate arml_support as cxsupport;
+extern crate arml_support as akro_support;
 #[cfg(test)]
-extern crate arml_system as cxsystem;
+extern crate arml_system as akro_system;
 extern crate arml_tokenbalances as tokenbalances;
 // chainx runtime module bridge
 extern crate arml_bridge_btc as btc;
@@ -99,12 +99,11 @@ decl_module! {
     }
 }
 
-//TODO: actualize
-//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
-//    fn on_finalize(_: T::BlockNumber) {
-//        // do nothing
-//    }
-//}
+impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+    fn on_finalize(_: T::BlockNumber) {
+        // do nothing
+    }
+}
 
 decl_storage! {
     trait Store for Module<T: Trait> as Withdrawal {
