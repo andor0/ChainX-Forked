@@ -99,6 +99,8 @@ pub use bridge_btc::Params;
 #[cfg(feature = "std")]
 
 pub fn inherent_extrinsics(data: InherentData) -> Vec<UncheckedExtrinsic> {
+    //TODO: actualize
+    /*
     let mut inherent = vec![generic::UncheckedMortalExtrinsic::new_unsigned(
         Call::Timestamp(TimestampCall::set(data.timestamp)),
     )];
@@ -112,6 +114,8 @@ pub fn inherent_extrinsics(data: InherentData) -> Vec<UncheckedExtrinsic> {
             Call::Consensus(ConsensusCall::note_offline(data.offline_indices)),
         ));
     }
+    */
+    let inherent = vec![];
 
     inherent
 }
@@ -354,8 +358,7 @@ impl council::motions::Trait for Runtime {
 }
 
 impl akro_support::Trait for Runtime {}
-
-impl checked_block::arml_system::Trait for Runtime {}
+impl akro_system::Trait for Runtime {}
 
 impl tokenbalances::Trait for Runtime {
     const AKRO_SYMBOL: tokenbalances::SymbolString = b"PCX";

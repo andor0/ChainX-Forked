@@ -25,7 +25,7 @@ impl CheckedBlock {
             .extrinsics
             .get(TIMESTAMP_SET_POSITION as usize)
             .map_or(false, |xt| {
-                !xt.is_signed()
+                !xt.is_signed().unwrap_or(false)
                     && match xt.function {
                         Call::Timestamp(TimestampCall::set(_)) => true,
                         _ => false,
