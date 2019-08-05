@@ -62,7 +62,7 @@ pub type Block = generic::Block<Header, UncheckedExtrinsic>;
 pub type BlockNumber = u64;
 
 /// Alias to Ed25519 pubkey that identifies an account on the relay chain.
-pub type AccountId = primitives::ed25519::Public;
+pub type AccountId = ed25519::Public;
 
 /// The type for looking up accounts. We don't expect more than 4 billion of them, but you
 /// never know...

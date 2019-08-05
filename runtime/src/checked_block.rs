@@ -2,12 +2,15 @@
 
 //! Typesafe block interaction.
 
+extern crate arml_system;
+
 use super::{
     AccountId, Block, Call, BLOCK_PRODUCER_POSITION, NOTE_OFFLINE_POSITION, TIMESTAMP_SET_POSITION,
 };
 use timestamp::Call as TimestampCall;
 //use session::Call as SessionCall;
-use arml_system::Call as CXSystemCall;
+use self::arml_system::Call as AkroSystemCall;
+use srml_support::inherent::Extrinsic;
 
 /// Provides a type-safe wrapper around a structurally valid block.
 pub struct CheckedBlock {
@@ -82,7 +85,7 @@ impl CheckedBlock {
             .extrinsics
             .get(BLOCK_PRODUCER_POSITION as usize)
             .and_then(|xt| match xt.function {
-                Call::CXSystem(CXSystemCall::set_block_producer(x)) => Some(x),
+                Call::AkroSystem(AkroSystemCall::set_block_producer(x)) => Some(x),
                 _ => None,
             })
     }

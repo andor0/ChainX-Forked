@@ -38,16 +38,16 @@ extern crate srml_system as system;
 #[cfg(test)]
 extern crate srml_timestamp as timestamp;
 
-// chainx runtime module
+// akro runtime module
 #[cfg(test)]
-extern crate cxrml_associations as associations;
-extern crate cxrml_funds_financialrecords as financialrecords;
-extern crate cxrml_support as cxsupport;
+extern crate arml_associations as associations;
+extern crate arml_funds_financialrecords as financialrecords;
+extern crate arml_support as cxsupport;
 #[cfg(test)]
-extern crate cxrml_system as cxsystem;
-extern crate cxrml_tokenbalances as tokenbalances;
+extern crate arml_system as cxsystem;
+extern crate arml_tokenbalances as tokenbalances;
 // chainx runtime module bridge
-extern crate cxrml_bridge_btc as btc;
+extern crate arml_bridge_btc as btc;
 
 #[cfg(test)]
 extern crate base58;
@@ -57,7 +57,7 @@ mod tests;
 
 use rstd::prelude::*;
 //use rstd::result::Result as StdResult;
-use runtime_primitives::traits::OnFinalise;
+use runtime_primitives::traits::OnFinalize;
 use runtime_support::dispatch::Result;
 use runtime_support::StorageValue;
 
@@ -79,15 +79,32 @@ pub trait Trait: tokenbalances::Trait + financialrecords::Trait + btc::Trait {
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
-        fn withdraw(origin, sym: Symbol, value: T::TokenBalance, addr: Vec<u8>, ext: Vec<u8>) -> Result;
+        fn withdraw(
+            origin,
+            sym: Symbol,
+            value: T::TokenBalance,
+            addr: Vec<u8>,
+            ext: Vec<u8>
+        ) -> Result {
+            runtime_io::print("[funds withdrawal] withdraw");
+            let who = ensure_signed(origin)?;
+
+            cxsupport::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
+
+            let _d = Self::verify_addr(&sym, &addr, &ext)?;
+
+            financialrecords::Module::<T>::withdrawal(&who, &sym, value, addr, ext)?;
+            Ok(())
+        }
     }
 }
 
-impl<T: Trait> OnFinalise<T::BlockNumber> for Module<T> {
-    fn on_finalise(_: T::BlockNumber) {
-        // do nothing
-    }
-}
+//TODO: actualize
+//impl<T: Trait> OnFinalize<T::BlockNumber> for Module<T> {
+//    fn on_finalize(_: T::BlockNumber) {
+//        // do nothing
+//    }
+//}
 
 decl_storage! {
     trait Store for Module<T: Trait> as Withdrawal {
@@ -101,24 +118,6 @@ impl<T: Trait> Module<T> {
     //    fn deposit_event(event: Event<T>) {
     //        <system::Module<T>>::deposit_event(<T as Trait>::Event::from(event).into());
     //    }
-
-    fn withdraw(
-        origin: T::Origin,
-        sym: Symbol,
-        value: T::TokenBalance,
-        addr: Vec<u8>,
-        ext: Vec<u8>,
-    ) -> Result {
-        runtime_io::print("[funds withdrawal] withdraw");
-        let who = ensure_signed(origin)?;
-
-        cxsupport::Module::<T>::handle_fee_before(&who, Self::withdrawal_fee(), true, || Ok(()))?;
-
-        let _d = Self::verify_addr(&sym, &addr, &ext)?;
-
-        financialrecords::Module::<T>::withdrawal(&who, &sym, value, addr, ext)?;
-        Ok(())
-    }
 
     fn verify_addr(sym: &Symbol, addr: &[u8], _ext: &[u8]) -> Result {
         match sym.as_ref() {
